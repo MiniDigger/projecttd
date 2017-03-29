@@ -51,7 +51,7 @@ project(":desktop") {
 project(":android") {
     apply plugin: "android"
 
-    sourceCompatibility = 1.7
+    sourceCompatibility = 1.8
 
     configurations { natives }
 
@@ -97,7 +97,7 @@ project(":html") {
 project(":core") {
     apply plugin: "java"
 
-    sourceCompatibility = 1.7
+    sourceCompatibility = 1.8
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -106,8 +106,4 @@ project(":core") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
     }
-}
-
-tasks.eclipse.doLast {
-    delete ".project"
 }

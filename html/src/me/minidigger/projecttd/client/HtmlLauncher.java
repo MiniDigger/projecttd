@@ -1,7 +1,6 @@
 package me.minidigger.projecttd.client;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 
@@ -16,13 +15,6 @@ public class HtmlLauncher extends GwtApplication {
 
     @Override
     public ApplicationListener createApplicationListener() {
-        Test test = () -> System.out.println("test");
-        test.test();
         return new ProjectTD();
-    }
-
-    @FunctionalInterface
-    interface Test {
-        void test();
     }
 }

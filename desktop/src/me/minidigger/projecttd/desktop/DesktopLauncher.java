@@ -8,14 +8,7 @@ import me.minidigger.projecttd.ProjectTD;
 public class DesktopLauncher {
 
     public static void main(String[] arg) {
-        Test test = () -> System.out.println("test");
-        test.test();
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         new LwjglApplication(new ProjectTD(), config);
-    }
-
-    @FunctionalInterface
-    interface Test {
-        void test();
     }
 }
