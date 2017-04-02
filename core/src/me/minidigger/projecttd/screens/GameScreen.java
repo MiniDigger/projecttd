@@ -1,14 +1,24 @@
 package me.minidigger.projecttd.screens;
 
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+
+import me.minidigger.projecttd.components.PositionComponent;
+import me.minidigger.projecttd.components.RotationComponent;
+import me.minidigger.projecttd.components.SpriteComponent;
+import me.minidigger.projecttd.components.VelocityComponent;
+import me.minidigger.projecttd.systems.MovementSystem;
+import me.minidigger.projecttd.systems.RenderSystem;
 
 /**
  * Created by Martin on 01.04.2017.
@@ -22,20 +32,54 @@ public class GameScreen implements Screen {
     private int mapHeight;
     private int mapWidth;
 
+    private PooledEngine engine;
+
+    private Sprite minionSprite;
+
     @Override
     public void show() {
+        // map
         map = new TmxMapLoader().load("maps/map01.tmx");
 
         mapHeight = map.getProperties().get("height", 40, int.class);
         mapWidth = map.getProperties().get("width", 15, int.class);
 
+        // renderer
         float unitScale = 1 / map.getProperties().get("tilewidth", 128, int.class).floatValue();
-
         renderer = new OrthogonalTiledMapRenderer(map, unitScale);
 
+        // camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, mapWidth, mapHeight);
         camera.update();
+
+        // ecs
+        engine = new PooledEngine();
+        engine.addSystem(new MovementSystem());
+        engine.addSystem(new RenderSystem(camera));
+
+        loadSprites();
+
+        Entity test = getMinion();
+        test.getComponent(PositionComponent.class).set(10, 10);
+        test.getComponent(VelocityComponent.class).x = 1;
+    }
+
+    private void loadSprites() {
+        Texture texture = new Texture(Gdx.files.internal("tileset.png"));
+        minionSprite = new Sprite(texture, 15 * 128, 10 * 128, 128, 128);
+    }
+
+    public Entity getMinion() {
+        Entity entity = engine.createEntity();
+
+        entity.add(new PositionComponent());
+        entity.add(new VelocityComponent());
+        entity.add(new SpriteComponent(minionSprite));
+        entity.add(new RotationComponent());
+
+        engine.addEntity(entity);
+        return entity;
     }
 
     @Override
@@ -43,12 +87,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.position.x++;
-            if (camera.position.x < 0) {
-                camera.position.x = 0;
-            }
-        }
+        engine.update(delta);
 
         renderer.setView(camera);
         renderer.render();
@@ -59,8 +98,9 @@ public class GameScreen implements Screen {
         camera.viewportWidth = width;
         camera.viewportHeight = height;
 
-        float zoom = mapHeight / ((float) height);
-        camera.zoom = zoom;
+        camera.zoom = mapHeight / ((float) height);
+
+        panCamera(0);// clamp
 
         camera.update();
     }
