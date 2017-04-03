@@ -61,13 +61,16 @@ public class GameScreen implements Screen {
         loadSprites();
 
         Entity test = getMinion();
-        test.getComponent(PositionComponent.class).set(10, 10);
+        test.getComponent(PositionComponent.class).set(-50, -60);
         test.getComponent(VelocityComponent.class).x = 1;
     }
 
     private void loadSprites() {
         Texture texture = new Texture(Gdx.files.internal("tileset.png"));
-        minionSprite = new Sprite(texture, 15 * 128, 10 * 128, 128, 128);
+        minionSprite = new Sprite(texture, 15 * 128 + 1, 10 * 128 + 1, 128, 128);
+        float scale = 2;
+        minionSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
+        System.out.println("scale = " + minionSprite.getScaleX());
     }
 
     public Entity getMinion() {
@@ -87,10 +90,11 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        engine.update(delta);
-
         renderer.setView(camera);
         renderer.render();
+
+        engine.update(delta);
+
     }
 
     @Override
@@ -99,6 +103,7 @@ public class GameScreen implements Screen {
         camera.viewportHeight = height;
 
         camera.zoom = mapHeight / ((float) height);
+        System.out.println(camera.zoom);
 
         panCamera(0);// clamp
 

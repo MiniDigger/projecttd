@@ -39,7 +39,6 @@ public class RenderSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        System.out.println("add entity to process");
         renderQueue.add(entity);
     }
 
@@ -56,7 +55,6 @@ public class RenderSystem extends IteratingSystem {
 
             sprite.sprite.setRotation(rotation.degrees);
             sprite.sprite.setPosition(position.x, position.y);
-            System.out.println("sprite.sprite.getX() = " + sprite.sprite.getX());
 
             sprite.sprite.draw(batch);
         }
