@@ -12,11 +12,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
-import me.minidigger.projecttd.components.PositionComponent;
-import me.minidigger.projecttd.components.RotationComponent;
-import me.minidigger.projecttd.components.SpriteComponent;
-import me.minidigger.projecttd.components.VelocityComponent;
+import me.minidigger.projecttd.entities.Minion;
+import me.minidigger.projecttd.systems.MoveToSystem;
 import me.minidigger.projecttd.systems.MovementSystem;
 import me.minidigger.projecttd.systems.RenderSystem;
 
@@ -55,14 +54,20 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
+        engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new RenderSystem(camera));
 
         loadSprites();
+        setupEntities();
 
-        Entity test = getMinion();
-        test.getComponent(PositionComponent.class).set(-50, -60);
-        test.getComponent(VelocityComponent.class).x = 1;
+        Entity test = Minion.newMinion(new Vector2(-50, -60), new Vector2(-40, -70));
+//        Entity test = Minion.newMinion(new Vector2(-50, -60), null);
+    }
+
+    private void setupEntities() {
+        Minion.ENGINE = engine;
+        Minion.SPRITE = minionSprite;
     }
 
     private void loadSprites() {
@@ -71,18 +76,6 @@ public class GameScreen implements Screen {
         float scale = 2;
         minionSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
         System.out.println("scale = " + minionSprite.getScaleX());
-    }
-
-    public Entity getMinion() {
-        Entity entity = engine.createEntity();
-
-        entity.add(new PositionComponent());
-        entity.add(new VelocityComponent());
-        entity.add(new SpriteComponent(minionSprite));
-        entity.add(new RotationComponent());
-
-        engine.addEntity(entity);
-        return entity;
     }
 
     @Override

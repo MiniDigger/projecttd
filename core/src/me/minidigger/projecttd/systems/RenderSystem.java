@@ -8,9 +8,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
-import me.minidigger.projecttd.components.PositionComponent;
-import me.minidigger.projecttd.components.RotationComponent;
 import me.minidigger.projecttd.components.SpriteComponent;
+import me.minidigger.projecttd.components.TransformComponent;
 
 /**
  * Created by Martin on 02.04.2017.
@@ -22,19 +21,17 @@ public class RenderSystem extends IteratingSystem {
     private Camera camera;
 
     private ComponentMapper<SpriteComponent> spriteM;
-    private ComponentMapper<PositionComponent> positionM;
-    private ComponentMapper<RotationComponent> rotationM;
+    private ComponentMapper<TransformComponent> positionM;
 
     public RenderSystem(Camera camera) {
-        super(Family.all(SpriteComponent.class).get());
+        super(Family.all(SpriteComponent.class, TransformComponent.class).get());
 
         this.camera = camera;
         renderQueue = new Array<>();
         batch = new SpriteBatch();
 
         spriteM = ComponentMapper.getFor(SpriteComponent.class);
-        positionM = ComponentMapper.getFor(PositionComponent.class);
-        rotationM = ComponentMapper.getFor(RotationComponent.class);
+        positionM = ComponentMapper.getFor(TransformComponent.class);
     }
 
     @Override
@@ -50,11 +47,10 @@ public class RenderSystem extends IteratingSystem {
 
         for (Entity entity : renderQueue) {
             SpriteComponent sprite = spriteM.get(entity);
-            PositionComponent position = positionM.get(entity);
-            RotationComponent rotation = rotationM.get(entity);
+            TransformComponent transform = positionM.get(entity);
 
-            sprite.sprite.setRotation(rotation.degrees);
-            sprite.sprite.setPosition(position.x, position.y);
+            sprite.sprite.setRotation(transform.rotation);
+            sprite.sprite.setPosition(transform.position.x, transform.position.y);
 
             sprite.sprite.draw(batch);
         }

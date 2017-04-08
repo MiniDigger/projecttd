@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
-import me.minidigger.projecttd.components.PositionComponent;
+import me.minidigger.projecttd.components.TransformComponent;
 import me.minidigger.projecttd.components.VelocityComponent;
 
 /**
@@ -13,19 +13,21 @@ import me.minidigger.projecttd.components.VelocityComponent;
  */
 public class MovementSystem extends IteratingSystem {
 
-    private ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
+    private ComponentMapper<TransformComponent> pm = ComponentMapper.getFor(TransformComponent.class);
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
 
     public MovementSystem() {
-        super(Family.all(PositionComponent.class, VelocityComponent.class).get());
+        super(Family.all(TransformComponent.class, VelocityComponent.class).get());
     }
 
     @Override
     public void processEntity(Entity entity, float deltaTime) {
-        PositionComponent position = pm.get(entity);
+        TransformComponent transform = pm.get(entity);
         VelocityComponent velocity = vm.get(entity);
 
-        position.x += velocity.x * deltaTime;
-        position.y += velocity.y * deltaTime;
+        transform.position.x += velocity.linear.x * deltaTime;
+        transform.position.y += velocity.linear.y * deltaTime;
+
+        transform.rotation += velocity.angular * deltaTime;
     }
 }
