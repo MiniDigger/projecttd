@@ -19,11 +19,11 @@ public class MoveToSystem extends IteratingSystem {
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
     private ComponentMapper<TargetComponent> tm = ComponentMapper.getFor(TargetComponent.class);
 
-    private Vector2 linear = new Vector2();
+    private Vector2 temp = new Vector2();
 
     private float accelerationTime = 0.1f;
     private float maxAcceleration = 1f;
-    private float maxSpeed = 2f;
+    private float maxSpeed = 4f;
 
     public MoveToSystem() {
         super(Family.all(TransformComponent.class, VelocityComponent.class, TargetComponent.class).get());
@@ -42,11 +42,10 @@ public class MoveToSystem extends IteratingSystem {
         }
 
         // calc dir and len
-        Vector2 toTarget = linear.set(linear).sub(transform.position);
+        Vector2 toTarget = temp.set(target.target).sub(transform.position);
         float distance = toTarget.len();
-
         // don't go too far!
-        if (distance <= 1) {
+        if (distance <= 0.05) {
             velocity.linear.setZero();
             velocity.angular = 0;
             return;

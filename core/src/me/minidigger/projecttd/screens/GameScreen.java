@@ -4,10 +4,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -18,6 +20,7 @@ import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.systems.MoveToSystem;
 import me.minidigger.projecttd.systems.MovementSystem;
 import me.minidigger.projecttd.systems.RenderSystem;
+import me.minidigger.projecttd.utils.CoordinateUtil;
 
 /**
  * Created by Martin on 01.04.2017.
@@ -27,6 +30,7 @@ public class GameScreen implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
+    private ShapeRenderer shapeRenderer;
 
     private int mapHeight;
     private int mapWidth;
@@ -34,6 +38,9 @@ public class GameScreen implements Screen {
     private PooledEngine engine;
 
     private Sprite minionSprite;
+
+    private Vector2 touchPoint = new Vector2();
+    private Entity minion;
 
     @Override
     public void show() {
@@ -46,6 +53,7 @@ public class GameScreen implements Screen {
         // renderer
         float unitScale = 1 / map.getProperties().get("tilewidth", 128, int.class).floatValue();
         renderer = new OrthogonalTiledMapRenderer(map, unitScale);
+        shapeRenderer = new ShapeRenderer();
 
         // camera
         camera = new OrthographicCamera();
@@ -61,7 +69,8 @@ public class GameScreen implements Screen {
         loadSprites();
         setupEntities();
 
-        Entity test = Minion.newMinion(new Vector2(-50, -60), new Vector2(-40, -70));
+        minion = Minion.newMinion(new Vector2(10, 10), new Vector2(-40, -70));
+        //    minion = Minion.newMinion(new Vector2(-50, -60), new Vector2(-40, -70));
 //        Entity test = Minion.newMinion(new Vector2(-50, -60), null);
     }
 
@@ -75,7 +84,6 @@ public class GameScreen implements Screen {
         minionSprite = new Sprite(texture, 15 * 128 + 1, 10 * 128 + 1, 128, 128);
         float scale = 2;
         minionSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
-        System.out.println("scale = " + minionSprite.getScaleX());
     }
 
     @Override
@@ -88,6 +96,11 @@ public class GameScreen implements Screen {
 
         engine.update(delta);
 
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.5f, 16);
+        shapeRenderer.end();
     }
 
     @Override
@@ -131,5 +144,14 @@ public class GameScreen implements Screen {
         camera.position.x = MathUtils.clamp(camera.position.x, effectiveWidth / 2f, mapWidth - effectiveWidth / 2f);
 
         camera.update();
+    }
+
+    public void debugTouch(int screenX, int screenY, int pointer, int button) {
+        System.out.println("================================");
+        System.out.println("touch " + "(" + screenX + "," + screenY + ")");
+        CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
+        System.out.println("render " + touchPoint);
+        System.out.println("position " + Minion.getTransform(minion).position);
+        Minion.getTarget(minion).target.set(touchPoint);
     }
 }

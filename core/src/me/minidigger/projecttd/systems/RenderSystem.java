@@ -50,7 +50,7 @@ public class RenderSystem extends IteratingSystem {
             TransformComponent transform = positionM.get(entity);
 
             sprite.sprite.setRotation(transform.rotation);
-            sprite.sprite.setPosition(transform.position.x, transform.position.y);
+            sprite.sprite.setOrigin(transform.position.x,transform.position.y);
 
             sprite.sprite.draw(batch);
         }
