@@ -84,6 +84,7 @@ public class GameScreen implements Screen {
         minionSprite = new Sprite(texture, 15 * 128 + 1, 10 * 128 + 1, 128, 128);
         float scale = 2;
         minionSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
+        minionSprite.setCenter(128 / 2, 128 / 2);
     }
 
     @Override

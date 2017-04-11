@@ -22,8 +22,8 @@ public class MoveToSystem extends IteratingSystem {
     private Vector2 temp = new Vector2();
 
     private float accelerationTime = 0.1f;
-    private float maxAcceleration = 1f;
-    private float maxSpeed = 4f;
+    private float maxAcceleration = 3f;
+    private float maxSpeed = 6f;
 
     public MoveToSystem() {
         super(Family.all(TransformComponent.class, VelocityComponent.class, TargetComponent.class).get());
