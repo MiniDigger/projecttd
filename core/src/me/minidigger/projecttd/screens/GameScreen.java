@@ -35,6 +35,8 @@ public class GameScreen implements Screen {
     private int mapHeight;
     private int mapWidth;
 
+    private int tilewidth;
+
     private PooledEngine engine;
 
     private Sprite minionSprite;
@@ -50,8 +52,10 @@ public class GameScreen implements Screen {
         mapHeight = map.getProperties().get("height", 40, int.class);
         mapWidth = map.getProperties().get("width", 15, int.class);
 
+        tilewidth = map.getProperties().get("tilewidth", 128, int.class);
+
         // renderer
-        float unitScale = 1 / map.getProperties().get("tilewidth", 128, int.class).floatValue();
+        float unitScale = 1 / (float) tilewidth;
         renderer = new OrthogonalTiledMapRenderer(map, unitScale);
         shapeRenderer = new ShapeRenderer();
 
@@ -64,14 +68,14 @@ public class GameScreen implements Screen {
         engine = new PooledEngine();
         engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
-        engine.addSystem(new RenderSystem(camera));
+        engine.addSystem(new RenderSystem(camera, tilewidth));
 
         loadSprites();
         setupEntities();
 
         minion = Minion.newMinion(new Vector2(10, 10), new Vector2(-40, -70));
-        //    minion = Minion.newMinion(new Vector2(-50, -60), new Vector2(-40, -70));
-//        Entity test = Minion.newMinion(new Vector2(-50, -60), null);
+        // minion = Minion.newMinion(new Vector2(-50, -60), new Vector2(-40, -70));
+        // Entity test = Minion.newMinion(new Vector2(-50, -60), null);
     }
 
     private void setupEntities() {
@@ -81,10 +85,9 @@ public class GameScreen implements Screen {
 
     private void loadSprites() {
         Texture texture = new Texture(Gdx.files.internal("tileset.png"));
-        minionSprite = new Sprite(texture, 15 * 128 + 1, 10 * 128 + 1, 128, 128);
+        minionSprite = new Sprite(texture, 15 * tilewidth + 1, 10 * tilewidth + 1, tilewidth, tilewidth);
         float scale = 2;
         minionSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
-        minionSprite.setCenter(128 / 2, 128 / 2);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class GameScreen implements Screen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.5f, 16);
+        shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
         shapeRenderer.end();
     }
 
