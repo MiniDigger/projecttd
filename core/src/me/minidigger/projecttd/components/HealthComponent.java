@@ -9,8 +9,8 @@ public class HealthComponent implements Component {
 
     private double health = 100;
 
-    public HealthComponent(double healthi) {
-        health = health;
+    public HealthComponent(double health) {
+        this.health = health;
     }
 
     public double damage(double damage) {
