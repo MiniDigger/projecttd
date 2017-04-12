@@ -15,3 +15,8 @@ Interesting tasks:
 
 currently using a tileset by kenny.nl, go check his stuff out!  
 (If you find/want to make something better for me, just open an issue/pr :P)
+
+# license
+
+its MIT, so yeah.  
+(if you don't know what that means, go check out githubs nice new lil explainy thingy [here](LICENSE.md)
