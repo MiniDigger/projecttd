@@ -151,11 +151,11 @@ public class GameScreen implements Screen {
     }
 
     public void debugTouch(int screenX, int screenY, int pointer, int button) {
-        System.out.println("================================");
-        System.out.println("touch " + "(" + screenX + "," + screenY + ")");
+        //System.out.println("================================");
+        //System.out.println("touch " + "(" + screenX + "," + screenY + ")");
         CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
-        System.out.println("render " + touchPoint);
-        System.out.println("position " + Minion.getTransform(minion).position);
+        //System.out.println("render " + touchPoint);
+        //System.out.println("position " + Minion.getTransform(minion).position);
         Minion.getTarget(minion).target.set(touchPoint);
     }
 }
