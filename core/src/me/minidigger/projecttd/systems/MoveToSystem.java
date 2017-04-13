@@ -82,12 +82,8 @@ public class MoveToSystem extends IteratingSystem {
         // Calculate the orientation based on the velocity of the owner
         float targetOrientation = VectorUtil.vectorToAngle(velocity.linear);
 
-        System.out.println("target " + targetOrientation);
-
         // Get the rotation direction to the target wrapped to the range [-PI, PI]
         float rotation = ArithmeticUtils.wrapAngleAroundZero(targetOrientation - (transform.rotation - 90) * MathUtils.degreesToRadians);
-
-        System.out.println("rotation " + rotation);
 
         // Absolute rotation
         float rotationSize = rotation < 0f ? -rotation : rotation;
@@ -95,7 +91,6 @@ public class MoveToSystem extends IteratingSystem {
         // Check if we are there, set velocity to 0 and return if so
         if (rotationSize <= 0.1) {
             velocity.angular = 0;
-            System.out.println("return size <= 1");
             return;
         }
 
@@ -114,7 +109,5 @@ public class MoveToSystem extends IteratingSystem {
         if (angularAcceleration > maxAngularAcceleration) {
             velocity.angular *= maxAngularAcceleration / angularAcceleration;
         }
-
-        System.out.println(velocity.angular);
     }
 }

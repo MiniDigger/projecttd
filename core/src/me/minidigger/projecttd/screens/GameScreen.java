@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import me.minidigger.projecttd.entities.Minion;
+import me.minidigger.projecttd.entities.Tower;
 import me.minidigger.projecttd.systems.MoveToSystem;
 import me.minidigger.projecttd.systems.MovementSystem;
 import me.minidigger.projecttd.systems.RenderSystem;
@@ -40,8 +41,10 @@ public class GameScreen implements Screen {
     private PooledEngine engine;
 
     private Sprite minionSprite;
+    private Sprite towerSprite;
 
     private Vector2 touchPoint = new Vector2();
+    private Vector2 spawnPoint = new Vector2();
     private Entity minion;
 
     @Override
@@ -73,21 +76,27 @@ public class GameScreen implements Screen {
         loadSprites();
         setupEntities();
 
-        minion = Minion.newMinion(new Vector2(10, 10), new Vector2(-40, -70));
-        // minion = Minion.newMinion(new Vector2(-50, -60), new Vector2(-40, -70));
-        // Entity test = Minion.newMinion(new Vector2(-50, -60), null);
+        minion = Minion.newMinion(new Vector2(10, 10), new Vector2(20, 0));
     }
 
     private void setupEntities() {
         Minion.ENGINE = engine;
         Minion.SPRITE = minionSprite;
+
+        Tower.ENGINE = engine;
+        Tower.SPRITE = towerSprite;
     }
 
     private void loadSprites() {
         Texture texture = new Texture(Gdx.files.internal("tileset.png"));
+
         minionSprite = new Sprite(texture, 15 * tilewidth + 1, 10 * tilewidth + 1, tilewidth, tilewidth);
         float scale = 2;
         minionSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
+
+        towerSprite = new Sprite(texture, 19 * tilewidth + 1, 7 * tilewidth + 1, tilewidth, tilewidth);
+        scale = 3;
+        towerSprite.setScale((mapHeight / (float) Gdx.graphics.getHeight()) / scale);
     }
 
     @Override
@@ -113,7 +122,6 @@ public class GameScreen implements Screen {
         camera.viewportHeight = height;
 
         camera.zoom = mapHeight / ((float) height);
-        System.out.println(camera.zoom);
 
         panCamera(0);// clamp
 
@@ -151,11 +159,12 @@ public class GameScreen implements Screen {
     }
 
     public void debugTouch(int screenX, int screenY, int pointer, int button) {
-        //System.out.println("================================");
-        //System.out.println("touch " + "(" + screenX + "," + screenY + ")");
-        CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
-        //System.out.println("render " + touchPoint);
-        //System.out.println("position " + Minion.getTransform(minion).position);
-        Minion.getTarget(minion).target.set(touchPoint);
+        if (button == 0) {
+            CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
+            Minion.getTarget(minion).target.set(touchPoint);
+        } else if (button == 1) {
+            CoordinateUtil.touchToWorld(spawnPoint.set(screenX, screenY), camera);
+            Tower.newTower(spawnPoint.cpy());
+        }
     }
 }
