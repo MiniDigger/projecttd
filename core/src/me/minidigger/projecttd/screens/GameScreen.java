@@ -20,6 +20,7 @@ import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
 import me.minidigger.projecttd.systems.MoveToSystem;
 import me.minidigger.projecttd.systems.MovementSystem;
+import me.minidigger.projecttd.systems.PathFindingSystem;
 import me.minidigger.projecttd.systems.RenderSystem;
 import me.minidigger.projecttd.utils.CoordinateUtil;
 
@@ -69,6 +70,7 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
+        engine.addSystem(new PathFindingSystem());
         engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new RenderSystem(camera, tilewidth));
