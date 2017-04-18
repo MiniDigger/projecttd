@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import me.minidigger.projecttd.components.HealthComponent;
+import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.components.SpriteComponent;
 import me.minidigger.projecttd.components.TargetComponent;
 import me.minidigger.projecttd.components.TransformComponent;
@@ -34,6 +35,7 @@ public class Minion {
         entity.add(new TransformComponent(spawn));
         entity.add(new TargetComponent(target));
         entity.add(new HealthComponent(100));
+        entity.add(new PathComponent());
 
         ENGINE.addEntity(entity);
         return entity;

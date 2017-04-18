@@ -24,25 +24,29 @@ import com.badlogic.gdx.utils.Array;
  *
  * @author davebaol
  */
-public class FlatTiledGraph implements IndexedGraph<FlatTiledNode>{
-    public static final int sizeX = 125; // 200; //100;
-    public static final int sizeY = 75; // 120; //60;
+public class FlatTiledGraph implements IndexedGraph<FlatTiledNode> {
 
     protected Array<FlatTiledNode> nodes;
 
     public boolean diagonal;
     public FlatTiledNode startNode;
 
+    public int sizeX;
+    public int sizeY;
+
     public FlatTiledGraph() {
-        this.nodes = new Array<>(sizeX * sizeY);
         this.diagonal = false;
         this.startNode = null;
     }
 
-    public void init(int[][] map) {
+    public void init(TileType[][] map, int sizeX, int sizeY) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        this.nodes = new Array<>(sizeX * sizeY);
+
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                nodes.add(new FlatTiledNode(x, y, map[x][y], 4));
+                nodes.add(new FlatTiledNode(x, y, map[x][y], 4, sizeY));
             }
         }
 
@@ -84,7 +88,39 @@ public class FlatTiledGraph implements IndexedGraph<FlatTiledNode>{
 
     private void addConnection(FlatTiledNode n, int xOffset, int yOffset) {
         FlatTiledNode target = getNode(n.x + xOffset, n.y + yOffset);
-        if (target.type == FlatTiledNode.TILE_FLOOR) n.getConnections().add(new FlatTiledConnection(this, n, target));
+        if (target.type == TileType.FLOOR)
+            n.getConnections().add(new FlatTiledConnection(this, n, target));
     }
 
+    public void updateTile(int x, int y, TileType type) {
+        FlatTiledNode node = getNode(x, y);
+        node.type = type;
+        if (x > 0) updateConnection(node, -1, 0);
+        if (y > 0) updateConnection(node, 0, -1);
+        if (x < sizeX - 1) updateConnection(node, 1, 0);
+        if (y < sizeY - 1) updateConnection(node, 0, 1);
+    }
+
+    private void updateConnection(FlatTiledNode n, int xOffset, int yOffset) {
+        FlatTiledNode target = getNode(n.x + xOffset, n.y + yOffset);
+        boolean wasThere = false;
+        for (int i = 0; i < n.getConnections().size; i++) {
+            Connection connection = n.getConnections().get(i);
+            if (connection.getFromNode().equals(n) && connection.getToNode().equals(target)) {
+                wasThere = true;
+                // no longer walkable -> remove
+                if (target.type != TileType.FLOOR) {
+                    n.getConnections().removeIndex(i);
+                    break;
+                }
+            }
+        }
+
+        if (!wasThere) {
+            // new connection, wooo
+            if (target.type == TileType.FLOOR) {
+                n.getConnections().add(new FlatTiledConnection(this, n, target));
+            }
+        }
+    }
 }

@@ -17,4 +17,10 @@ public class CoordinateUtil {
         point.set(vector3.x, vector3.y);
         return point;
     }
+
+    public static Vector2 alignToGrid(Vector2 input) {
+        input.x = (int) (input.x) + 0.5f;
+        input.y = (int) (input.y) + 0.5f;
+        return input;
+    }
 }

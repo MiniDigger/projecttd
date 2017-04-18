@@ -1,5 +1,6 @@
 package me.minidigger.projecttd;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -13,6 +14,9 @@ public class ProjectTD extends Game {
 
     @Override
     public void create() {
+        System.out.println("create()");
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+
         // input
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new GestureDetector(new GameGestureProcessor(this)));

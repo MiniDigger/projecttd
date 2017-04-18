@@ -25,21 +25,6 @@ import com.badlogic.gdx.utils.Array;
  */
 public class FlatTiledNode {
     /**
-     * A constant representing an empty tile
-     */
-    public static final int TILE_EMPTY = 0;
-
-    /**
-     * A constant representing a walkable tile
-     */
-    public static final int TILE_FLOOR = 1;
-
-    /**
-     * A constant representing a wall
-     */
-    public static final int TILE_WALL = 2;
-
-    /**
      * The x coordinate of this tile
      */
     public final int x;
@@ -50,13 +35,15 @@ public class FlatTiledNode {
     public final int y;
 
     /**
-     * The type of this tile, see {@link #TILE_EMPTY}, {@link #TILE_FLOOR} and {@link #TILE_WALL}
+     * The type of this tile
      */
-    public final int type;
+    public TileType type;
+
+    public int sizeY;
 
     protected Array<Connection<FlatTiledNode>> connections;
 
-    public FlatTiledNode(int x, int y, int type, int connectionCapacity) {
+    public FlatTiledNode(int x, int y, TileType type, int connectionCapacity, int sizeY) {
         this.x = x;
         this.y = y;
         this.type = type;
@@ -68,7 +55,7 @@ public class FlatTiledNode {
     }
 
     public int getIndex() {
-        return x * FlatTiledGraph.sizeY + y;
+        return x * sizeY + y;
     }
 
 }

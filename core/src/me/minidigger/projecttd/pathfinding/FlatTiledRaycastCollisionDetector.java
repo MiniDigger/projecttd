@@ -72,7 +72,7 @@ public class FlatTiledRaycastCollisionDetector<N extends FlatTiledNode> implemen
         int ystep = (y0 < y1 ? 1 : -1);
         for (int x = x0; x <= x1; x++) {
             FlatTiledNode tile = steep ? worldMap.getNode(y, x) : worldMap.getNode(x, y);
-            if (tile.type != FlatTiledNode.TILE_FLOOR) return true; // We've hit a wall
+            if (tile.type != TileType.FLOOR) return true; // We've hit a wall
             error += deltay;
             if (error + error >= deltax) {
                 y += ystep;

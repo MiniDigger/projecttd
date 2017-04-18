@@ -35,7 +35,8 @@ public class FlatTiledConnection extends DefaultConnection<FlatTiledNode> {
 
     @Override
     public float getCost() {
-        if (worldMap.diagonal) return 1;
-        return getToNode().x != worldMap.startNode.x && getToNode().y != worldMap.startNode.y ? NON_DIAGONAL_COST : 1;
+//        if (worldMap.diagonal) return 1;
+//        return getToNode().x != worldMap.startNode.x && getToNode().y != worldMap.startNode.y ? NON_DIAGONAL_COST : 1;
+        return 1;
     }
 }

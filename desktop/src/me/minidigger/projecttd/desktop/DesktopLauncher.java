@@ -8,6 +8,7 @@ import me.minidigger.projecttd.ProjectTD;
 public class DesktopLauncher {
 
     public static void main(String[] arg) {
+        //System.setProperty("org.lwjgl.util.Debug", "true");
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         new LwjglApplication(new ProjectTD(), config);
     }

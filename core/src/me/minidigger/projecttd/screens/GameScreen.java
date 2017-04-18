@@ -18,6 +18,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
+import me.minidigger.projecttd.pathfinding.FlatTiledNode;
+import me.minidigger.projecttd.pathfinding.TileType;
 import me.minidigger.projecttd.systems.MoveToSystem;
 import me.minidigger.projecttd.systems.MovementSystem;
 import me.minidigger.projecttd.systems.PathFindingSystem;
@@ -48,6 +50,8 @@ public class GameScreen implements Screen {
     private Vector2 spawnPoint = new Vector2();
     private Entity minion;
 
+    private PathFindingSystem pathFindingSystem;
+
     @Override
     public void show() {
         // map
@@ -70,7 +74,7 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
-        engine.addSystem(new PathFindingSystem());
+        engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth));
         engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new RenderSystem(camera, tilewidth));
@@ -78,7 +82,7 @@ public class GameScreen implements Screen {
         loadSprites();
         setupEntities();
 
-        minion = Minion.newMinion(new Vector2(10, 10), new Vector2(20, 0));
+        minion = Minion.newMinion(new Vector2(10, 10), new Vector2(30, 5));
     }
 
     private void setupEntities() {
@@ -163,10 +167,18 @@ public class GameScreen implements Screen {
     public void debugTouch(int screenX, int screenY, int pointer, int button) {
         if (button == 0) {
             CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
-            Minion.getTarget(minion).target.set(touchPoint);
+            //Minion.getTarget(minion).target.set(touchPoint);
         } else if (button == 1) {
             CoordinateUtil.touchToWorld(spawnPoint.set(screenX, screenY), camera);
-            Tower.newTower(spawnPoint.cpy());
+            FlatTiledNode node = pathFindingSystem.getGraph().getNode((int) spawnPoint.x, (int) spawnPoint.y);
+            if (node.type == TileType.FLOOR) {
+                node.type = TileType.TOWER;
+                Tower.newTower(spawnPoint.cpy());
+            } else {
+                System.out.println("can't place tower here: " + node.type);
+            }
         }
+
+        System.out.println(touchPoint);
     }
 }
