@@ -95,6 +95,9 @@ public class PathFindingSystem extends IteratingSystem {
                 FlatTiledNode node = path.path.get(path.index);
                 path.nextPoint.x = node.x + 0.5f;
                 path.nextPoint.y = node.y + 0.5f;
+            } else {
+                // goal reached
+                path.completed.run(entity);
             }
         }
     }

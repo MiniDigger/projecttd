@@ -14,8 +14,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
 
+import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
 import me.minidigger.projecttd.pathfinding.FlatTiledNode;
@@ -83,6 +85,21 @@ public class GameScreen implements Screen {
         setupEntities();
 
         minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5), new Vector2(39.5f, mapHeight - 10 + 0.5f));
+
+        new Thread(() -> {
+            while (true) {
+                Entity minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5), new Vector2(39.5f, mapHeight - 10 + 0.5f));
+                minion.getComponent(PathComponent.class).completed = (e) -> {
+                    engine.removeEntity(e);
+                    System.out.println("DIE");
+                };
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void setupEntities() {
