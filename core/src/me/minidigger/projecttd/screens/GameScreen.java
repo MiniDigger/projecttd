@@ -182,14 +182,15 @@ public class GameScreen implements Screen {
     public void debugTouch(int screenX, int screenY, int pointer, int button) {
         if (button == 0) {
             CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
-            //Minion.getTarget(minion).target.set(touchPoint);
+            //Minion.getTarget(minion).nextPoint.set(touchPoint);
             System.out.println(touchPoint + " " + pathFindingSystem.getGraph().getNode((int) touchPoint.x, (int) touchPoint.y).type);
         } else if (button == 1) {
             CoordinateUtil.touchToWorld(spawnPoint.set(screenX, screenY), camera);
             FlatTiledNode node = pathFindingSystem.getGraph().getNode((int) spawnPoint.x, (int) spawnPoint.y);
-            if (node.type == TileType.FLOOR) {
+            if (node.type == TileType.EMPTY || node.type == TileType.FLOOR) {
                 node.type = TileType.TOWER;
                 Tower.newTower(spawnPoint.cpy());
+                pathFindingSystem.updateTile((int) spawnPoint.x, (int) spawnPoint.y, TileType.TOWER);
             } else {
                 System.out.println("can't place tower here: " + node.type);
             }

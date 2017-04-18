@@ -4,11 +4,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.utils.ArithmeticUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.components.TargetComponent;
 import me.minidigger.projecttd.components.TransformComponent;
 import me.minidigger.projecttd.components.VelocityComponent;
@@ -21,7 +21,7 @@ public class MoveToSystem extends IteratingSystem {
 
     private ComponentMapper<TransformComponent> pm = ComponentMapper.getFor(TransformComponent.class);
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
-    private ComponentMapper<TargetComponent> tm = ComponentMapper.getFor(TargetComponent.class);
+    private ComponentMapper<PathComponent> pathM = ComponentMapper.getFor(PathComponent.class);
 
     private Vector2 temp = new Vector2();
 
@@ -43,16 +43,16 @@ public class MoveToSystem extends IteratingSystem {
     public void processEntity(Entity entity, float deltaTime) {
         TransformComponent transform = pm.get(entity);
         VelocityComponent velocity = vm.get(entity);
-        TargetComponent target = tm.get(entity);
+        PathComponent path = pathM.get(entity);
 
-        if (target.target == null) {
+        if (path.nextPoint == null) {
             velocity.linear.setZero();
             velocity.angular = 0;
             return;
         }
 
         // calc dir and len
-        Vector2 toTarget = temp.set(target.target).sub(transform.position);
+        Vector2 toTarget = temp.set(path.nextPoint).sub(transform.position);
         float distance = toTarget.len();
         // don't go too far!
         if (distance <= 0.05) {
@@ -65,7 +65,7 @@ public class MoveToSystem extends IteratingSystem {
         Vector2 targetVelocity = toTarget.scl(maxLinearSpeed / distance); // Optimized code for:
         // toTarget.nor().scl(maxSpeed)
 
-        // Acceleration tries to get to the target velocity without exceeding max acceleration
+        // Acceleration tries to get to the nextPoint velocity without exceeding max acceleration
         targetVelocity.sub(velocity.linear).scl(1f / linearAccelerationTime).limit(maxLinearAcceleration);
 
         // set it
@@ -82,7 +82,7 @@ public class MoveToSystem extends IteratingSystem {
         // Calculate the orientation based on the velocity of the owner
         float targetOrientation = VectorUtil.vectorToAngle(velocity.linear);
 
-        // Get the rotation direction to the target wrapped to the range [-PI, PI]
+        // Get the rotation direction to the nextPoint wrapped to the range [-PI, PI]
         float rotation = ArithmeticUtils.wrapAngleAroundZero(targetOrientation - (transform.rotation - 90) * MathUtils.degreesToRadians);
 
         // Absolute rotation
@@ -97,11 +97,11 @@ public class MoveToSystem extends IteratingSystem {
         // Use maximum rotation
         float targetRotation = maxAngularSpeed;
 
-        // The final target rotation combines
+        // The final nextPoint rotation combines
         // speed (already in the variable) and direction
         targetRotation *= rotation / rotationSize;
 
-        // Acceleration tries to get to the target rotation
+        // Acceleration tries to get to the nextPoint rotation
         velocity.angular = (targetRotation - velocity.angular) / angularAccelerationTime;
 
         // Check if the absolute acceleration is too great

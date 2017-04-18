@@ -31,6 +31,8 @@ public class FlatTiledGraph implements IndexedGraph<FlatTiledNode> {
     public boolean diagonal;
     public FlatTiledNode startNode;
 
+    public boolean dirty;
+
     public int sizeX;
     public int sizeY;
 
@@ -94,8 +96,10 @@ public class FlatTiledGraph implements IndexedGraph<FlatTiledNode> {
     }
 
     public void updateTile(int x, int y, TileType type) {
+        dirty = true;
         FlatTiledNode node = getNode(x, y);
         node.type = type;
+        System.out.println("update tile " + x + "," + y + "=" + type);
         if (x > 0) updateConnection(node, -1, 0);
         if (y > 0) updateConnection(node, 0, -1);
         if (x < sizeX - 1) updateConnection(node, 1, 0);

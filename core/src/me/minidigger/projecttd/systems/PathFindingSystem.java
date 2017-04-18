@@ -18,12 +18,14 @@ import me.minidigger.projecttd.pathfinding.FlatTiledNode;
 import me.minidigger.projecttd.pathfinding.FlatTiledSmoothableGraphPath;
 import me.minidigger.projecttd.pathfinding.TileType;
 
-import java.util.Arrays;
-
 /**
  * Created by mbenndorf on 13.04.2017.
  */
 public class PathFindingSystem extends IteratingSystem {
+
+    private final int mapWidth;
+    private final int mapHeight;
+    private final TileType[][] map;
 
     private ComponentMapper<PathComponent> pm = ComponentMapper.getFor(PathComponent.class);
     private ComponentMapper<TargetComponent> tm = ComponentMapper.getFor(TargetComponent.class);
@@ -33,19 +35,26 @@ public class PathFindingSystem extends IteratingSystem {
     private FlatTiledGraph graph;
     private IndexedAStarPathFinder<FlatTiledNode> pathFinder;
 
+
     public PathFindingSystem(int mapHeight, int mapWidth, TiledMap tiledMap) {
         super(Family.all(PathComponent.class, TargetComponent.class, TransformComponent.class).get());
 
+        this.mapHeight = mapHeight;
+        this.mapWidth = mapWidth;
         graph = new FlatTiledGraph();
 
-        TileType[][] map = new TileType[mapWidth][mapHeight];
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Path");
+        map = new TileType[mapWidth][mapHeight];
+        TiledMapTileLayer path = (TiledMapTileLayer) tiledMap.getLayers().get("Path");
+        TiledMapTileLayer rocks = (TiledMapTileLayer) tiledMap.getLayers().get("Rocks");
+        TiledMapTileLayer bushes = (TiledMapTileLayer) tiledMap.getLayers().get("Bushes");
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[x].length; y++) {
-                if (layer.getCell(x, y) != null) {
+                if (path.getCell(x, y) != null) {
                     map[x][y] = TileType.FLOOR;
-                } else {
+                } else if (rocks.getCell(x, y) != null || bushes.getCell(x, y) != null) {
                     map[x][y] = TileType.WALL;
+                } else {
+                    map[x][y] = TileType.EMPTY;
                 }
             }
         }
@@ -55,27 +64,37 @@ public class PathFindingSystem extends IteratingSystem {
     }
 
     @Override
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+        if (graph.dirty) {
+            graph.dirty = false;
+        }
+    }
+
+    @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PathComponent path = pm.get(entity);
         TransformComponent transform = transformM.get(entity);
         TargetComponent target = tm.get(entity);
 
-        // no path yet, calc path
-        if (path.path == null) {
+        // no path yet or new path needed --> calc path
+        if (path.path == null || graph.dirty) {
             path.path = getPath(transform.position, target.target);
-            // set first target
-            FlatTiledNode node = path.path.get(0);
-            target.target.x = node.x + 0.5f;
-            target.target.y = node.y + 0.5f;
+            if (path.path.getCount() == 0) return;
+            // set first nextPoint
+            FlatTiledNode node = path.path.get(path.index = 0);
+            path.nextPoint.x = node.x + 0.5f;
+            path.nextPoint.y = node.y + 0.5f;
             return;
         }
 
-        if (target.target.dst(transform.position) <= 0.5) {
+        // here yet?
+        if (path.nextPoint.dst(transform.position) <= 0.5) {
             // don't go too far
             if (++path.index < path.path.getCount()) {
                 FlatTiledNode node = path.path.get(path.index);
-                target.target.x = node.x + 0.5f;
-                target.target.y = node.y + 0.5f;
+                path.nextPoint.x = node.x + 0.5f;
+                path.nextPoint.y = node.y + 0.5f;
             }
         }
     }
@@ -109,5 +128,13 @@ public class PathFindingSystem extends IteratingSystem {
 //            }
 //        }
 //        shapeRenderer.end();
+    }
+
+    public void updateTile(int x, int y, TileType tileType) {
+        map[x][y] = tileType;
+        graph.init(map, mapWidth, mapHeight);
+        pathFinder = new IndexedAStarPathFinder<>(graph);
+        graph.dirty = true;
+        //TODO OPTIMIZE!!!!
     }
 }
