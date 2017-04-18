@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
-        engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth));
+        engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth, map));
         engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new RenderSystem(camera, tilewidth));
@@ -82,7 +82,7 @@ public class GameScreen implements Screen {
         loadSprites();
         setupEntities();
 
-        minion = Minion.newMinion(new Vector2(10, 10), new Vector2(30, 5));
+        minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5), new Vector2(39.5f, mapHeight - 10 + 0.5f));
     }
 
     private void setupEntities() {
@@ -116,10 +116,24 @@ public class GameScreen implements Screen {
         engine.update(delta);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
+
+        // tile pos
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        shapeRenderer.setColor(Color.BLACK);
+//        for (int x = 0; x < mapWidth; x++) {
+//            for (int y = 0; y < mapHeight; y++) {
+//                shapeRenderer.circle(x + 0.5f, y + 0.5f, 0.2f, 20);
+//            }
+//        }
+//        shapeRenderer.end();
+
+        // touch pos
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
         shapeRenderer.end();
+
+        pathFindingSystem.debugRender(shapeRenderer);
     }
 
     @Override
@@ -153,6 +167,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         map.dispose();
         renderer.dispose();
+        shapeRenderer.dispose();
     }
 
     public void panCamera(float deltaX) {
@@ -168,6 +183,7 @@ public class GameScreen implements Screen {
         if (button == 0) {
             CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
             //Minion.getTarget(minion).target.set(touchPoint);
+            System.out.println(touchPoint + " " + pathFindingSystem.getGraph().getNode((int) touchPoint.x, (int) touchPoint.y).type);
         } else if (button == 1) {
             CoordinateUtil.touchToWorld(spawnPoint.set(screenX, screenY), camera);
             FlatTiledNode node = pathFindingSystem.getGraph().getNode((int) spawnPoint.x, (int) spawnPoint.y);
@@ -178,7 +194,5 @@ public class GameScreen implements Screen {
                 System.out.println("can't place tower here: " + node.type);
             }
         }
-
-        System.out.println(touchPoint);
     }
 }

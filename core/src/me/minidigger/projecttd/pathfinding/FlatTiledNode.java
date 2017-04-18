@@ -48,6 +48,7 @@ public class FlatTiledNode {
         this.y = y;
         this.type = type;
         this.connections = new Array<>(connectionCapacity);
+        this.sizeY = sizeY;
     }
 
     public Array<Connection<FlatTiledNode>> getConnections() {

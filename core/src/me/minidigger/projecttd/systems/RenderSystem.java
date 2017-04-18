@@ -23,12 +23,12 @@ public class RenderSystem extends IteratingSystem {
     private ComponentMapper<SpriteComponent> spriteM;
     private ComponentMapper<TransformComponent> positionM;
 
-    private float tilewidth;
+    private float tileWidth;
 
-    public RenderSystem(Camera camera, int tilewidth) {
+    public RenderSystem(Camera camera, int tileWidth) {
         super(Family.all(SpriteComponent.class, TransformComponent.class).get());
 
-        this.tilewidth = tilewidth / 2f;
+        this.tileWidth = tileWidth / 2f;
 
         this.camera = camera;
         renderQueue = new Array<>();
@@ -54,7 +54,7 @@ public class RenderSystem extends IteratingSystem {
             TransformComponent transform = positionM.get(entity);
 
             sprite.sprite.setRotation(transform.rotation);
-            sprite.sprite.setPosition(transform.position.x - tilewidth, transform.position.y - tilewidth);
+            sprite.sprite.setPosition(transform.position.x - tileWidth, transform.position.y - tileWidth);
 
             sprite.sprite.draw(batch);
         }

@@ -88,8 +88,9 @@ public class FlatTiledGraph implements IndexedGraph<FlatTiledNode> {
 
     private void addConnection(FlatTiledNode n, int xOffset, int yOffset) {
         FlatTiledNode target = getNode(n.x + xOffset, n.y + yOffset);
-        if (target.type == TileType.FLOOR)
+        if (target.type == TileType.FLOOR && n.type == TileType.FLOOR) {
             n.getConnections().add(new FlatTiledConnection(this, n, target));
+        }
     }
 
     public void updateTile(int x, int y, TileType type) {
