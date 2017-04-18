@@ -12,7 +12,9 @@ public class TransformComponent implements Component, Pool.Poolable {
     public Vector2 position;
     public float rotation = 0f;
 
-    public TransformComponent(Vector2 spawn) {
-        this.position = spawn;
+    @Override
+    public void reset() {
+        position = new Vector2();
+        rotation = 0f;
     }
 }

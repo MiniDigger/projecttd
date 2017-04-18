@@ -26,8 +26,13 @@ public class Tower {
 
         CoordinateUtil.alignToGrid(spawn);
 
-        entity.add(new SpriteComponent(SPRITE));
-        entity.add(new TransformComponent(spawn));
+        SpriteComponent spriteComponent = ENGINE.createComponent(SpriteComponent.class);
+        spriteComponent.sprite = SPRITE;
+        entity.add(spriteComponent);
+
+        TransformComponent transformComponent = ENGINE.createComponent(TransformComponent.class);
+        transformComponent.position = spawn;
+        entity.add(transformComponent);
 
         ENGINE.addEntity(entity);
         return entity;

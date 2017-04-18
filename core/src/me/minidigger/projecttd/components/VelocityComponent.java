@@ -12,4 +12,9 @@ public class VelocityComponent implements Component, Pool.Poolable {
     public Vector2 linear = new Vector2();
     public float angular = 0f;
 
+    @Override
+    public void reset() {
+        linear = new Vector2();
+        angular = 0f;
+    }
 }

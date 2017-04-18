@@ -30,12 +30,27 @@ public class Minion {
     public static Entity newMinion(Vector2 spawn, Vector2 target) {
         Entity entity = ENGINE.createEntity();
 
-        entity.add(new SpriteComponent(SPRITE));
-        entity.add(new VelocityComponent());
-        entity.add(new TransformComponent(spawn));
-        entity.add(new TargetComponent(target));
-        entity.add(new HealthComponent(100));
-        entity.add(new PathComponent());
+        SpriteComponent spriteComponent = ENGINE.createComponent(SpriteComponent.class);
+        spriteComponent.sprite = SPRITE;
+        entity.add(spriteComponent);
+
+        VelocityComponent velocityComponent = ENGINE.createComponent(VelocityComponent.class);
+        entity.add(velocityComponent);
+
+        TransformComponent transformComponent = ENGINE.createComponent(TransformComponent.class);
+        transformComponent.position = spawn;
+        entity.add(transformComponent);
+
+        TargetComponent targetComponent = ENGINE.createComponent(TargetComponent.class);
+        targetComponent.target = target;
+        entity.add(targetComponent);
+
+        HealthComponent healthComponent = ENGINE.createComponent(HealthComponent.class);
+        healthComponent.health = 100;
+        entity.add(healthComponent);
+
+        PathComponent pathComponent = ENGINE.createComponent(PathComponent.class);
+        entity.add(pathComponent);
 
         ENGINE.addEntity(entity);
         return entity;

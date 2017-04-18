@@ -9,9 +9,10 @@ import com.badlogic.gdx.utils.Pool;
  */
 public class TargetComponent implements Component, Pool.Poolable {
 
-    public Vector2 target;
+    public Vector2 target = new Vector2();
 
-    public TargetComponent(Vector2 target) {
-        this.target = target;
+    @Override
+    public void reset() {
+        target = new Vector2();
     }
 }

@@ -11,8 +11,8 @@ public class SpriteComponent implements Component, Pool.Poolable {
 
     public Sprite sprite;
 
-    public SpriteComponent(Sprite sprite) {
-        this.sprite = sprite;
+    @Override
+    public void reset() {
+        sprite = null;
     }
-
 }

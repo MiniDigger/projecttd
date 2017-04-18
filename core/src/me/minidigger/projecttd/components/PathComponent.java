@@ -1,9 +1,9 @@
 package me.minidigger.projecttd.components;
 
 import com.badlogic.ashley.core.Component;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
+
 import me.minidigger.projecttd.pathfinding.FlatTiledSmoothableGraphPath;
 import me.minidigger.projecttd.pathfinding.GoalReachedAction;
 
@@ -17,4 +17,13 @@ public class PathComponent implements Component, Pool.Poolable {
     public Vector2 nextPoint = new Vector2();
     public GoalReachedAction completed = (e) -> {
     };
+
+    @Override
+    public void reset() {
+        path = null;
+        index = 0;
+        nextPoint = new Vector2();
+        completed = (e) -> {
+        };
+    }
 }
