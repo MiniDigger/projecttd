@@ -83,11 +83,13 @@ public class GameScreen implements Screen {
         loadSprites();
         setupEntities();
 
-        minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5), new Vector2(39.5f, mapHeight - 10 + 0.5f));
+        pathFindingSystem.init(new Vector2(39.5f, mapHeight - 10 + 0.5f));
+
+        minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5));
 
         new Thread(() -> {
             while (true) {
-                Entity minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5), new Vector2(39.5f, mapHeight - 10 + 0.5f));
+                Entity minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5));
                 minion.getComponent(PathComponent.class).completed = (e) -> {
                     engine.removeEntity(e);
                     System.out.println("DIE");

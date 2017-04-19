@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import me.minidigger.projecttd.components.PathComponent;
-import me.minidigger.projecttd.components.TargetComponent;
 import me.minidigger.projecttd.components.TransformComponent;
 import me.minidigger.projecttd.components.VelocityComponent;
 import me.minidigger.projecttd.utils.VectorUtil;
@@ -36,7 +35,7 @@ public class MoveToSystem extends IteratingSystem {
     private float angularAccelerationTime = 0.1f;
 
     public MoveToSystem() {
-        super(Family.all(TransformComponent.class, VelocityComponent.class, TargetComponent.class).get());
+        super(Family.all(TransformComponent.class, VelocityComponent.class, PathComponent.class).get());
     }
 
     @Override

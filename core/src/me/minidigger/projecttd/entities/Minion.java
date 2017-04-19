@@ -27,7 +27,7 @@ public class Minion {
     private static ComponentMapper<TargetComponent> tartgetM = ComponentMapper.getFor(TargetComponent.class);
     private static ComponentMapper<HealthComponent> hm = ComponentMapper.getFor(HealthComponent.class);
 
-    public static Entity newMinion(Vector2 spawn, Vector2 target) {
+    public static Entity newMinion(Vector2 spawn) {
         Entity entity = ENGINE.createEntity();
 
         SpriteComponent spriteComponent = ENGINE.createComponent(SpriteComponent.class);
@@ -42,7 +42,6 @@ public class Minion {
         entity.add(transformComponent);
 
         TargetComponent targetComponent = ENGINE.createComponent(TargetComponent.class);
-        targetComponent.target = target;
         entity.add(targetComponent);
 
         HealthComponent healthComponent = ENGINE.createComponent(HealthComponent.class);
