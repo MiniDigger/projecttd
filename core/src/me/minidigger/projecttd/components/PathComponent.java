@@ -12,14 +12,14 @@ import me.minidigger.projecttd.systems.PathFindingSystem;
 public class PathComponent implements Component, Pool.Poolable {
 
     public int index = 0;
-    public Vector2 nextPoint = new Vector2();
+    public Vector2 nextPoint;
     public PathFindingSystem.GoalReachedAction completed = (e) -> {
     };
 
     @Override
     public void reset() {
         index = 0;
-        nextPoint = new Vector2();
+        nextPoint = null;
         completed = (e) -> {
         };
     }

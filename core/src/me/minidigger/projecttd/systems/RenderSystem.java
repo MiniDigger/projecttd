@@ -6,8 +6,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
-
 import me.minidigger.projecttd.components.SpriteComponent;
 import me.minidigger.projecttd.components.TransformComponent;
 
@@ -17,7 +15,6 @@ import me.minidigger.projecttd.components.TransformComponent;
 public class RenderSystem extends IteratingSystem {
 
     private SpriteBatch batch;
-    private Array<Entity> renderQueue;
     private Camera camera;
 
     private ComponentMapper<SpriteComponent> spriteM;
@@ -31,7 +28,6 @@ public class RenderSystem extends IteratingSystem {
         this.tileWidth = tileWidth / 2f;
 
         this.camera = camera;
-        renderQueue = new Array<>();
         batch = new SpriteBatch();
 
         spriteM = ComponentMapper.getFor(SpriteComponent.class);
@@ -40,7 +36,7 @@ public class RenderSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        renderQueue.add(entity);
+        // ignore
     }
 
     @Override
@@ -49,7 +45,7 @@ public class RenderSystem extends IteratingSystem {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        for (Entity entity : renderQueue) {
+        for (Entity entity : getEntities()) {
             SpriteComponent sprite = spriteM.get(entity);
             TransformComponent transform = positionM.get(entity);
 

@@ -8,19 +8,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-
 import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
-import me.minidigger.projecttd.pathfinding.FlatTiledNode;
-import me.minidigger.projecttd.pathfinding.TileType;
 import me.minidigger.projecttd.systems.MoveToSystem;
 import me.minidigger.projecttd.systems.MovementSystem;
 import me.minidigger.projecttd.systems.PathFindingSystem;
@@ -36,6 +35,8 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
+    private BitmapFont font = new BitmapFont();
+    private SpriteBatch spriteBatch = new SpriteBatch();
 
     private int mapHeight;
     private int mapWidth;
@@ -49,7 +50,7 @@ public class GameScreen implements Screen {
 
     private Vector2 touchPoint = new Vector2();
     private Vector2 spawnPoint = new Vector2();
-    private Entity minion;
+    private boolean debugRendering = false;
 
     private PathFindingSystem pathFindingSystem;
 
@@ -85,11 +86,9 @@ public class GameScreen implements Screen {
 
         pathFindingSystem.init(new Vector2(39.5f, mapHeight - 10 + 0.5f));
 
-        minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5));
-
         new Thread(() -> {
             while (true) {
-                Entity minion = Minion.newMinion(new Vector2(0, mapHeight - 1 - 5));
+                Entity minion = Minion.newMinion(new Vector2(1.5f, mapHeight - 0.5f - 5));
                 minion.getComponent(PathComponent.class).completed = (e) -> {
                     engine.removeEntity(e);
                     System.out.println("DIE");
@@ -135,23 +134,16 @@ public class GameScreen implements Screen {
 
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-        // tile pos
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.setColor(Color.BLACK);
-//        for (int x = 0; x < mapWidth; x++) {
-//            for (int y = 0; y < mapHeight; y++) {
-//                shapeRenderer.circle(x + 0.5f, y + 0.5f, 0.2f, 20);
-//            }
-//        }
-//        shapeRenderer.end();
+        if (debugRendering) {
+            // touch pos
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
+            shapeRenderer.end();
 
-        // touch pos
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
-        shapeRenderer.end();
-
-        pathFindingSystem.debugRender(shapeRenderer);
+            // many things
+            pathFindingSystem.debugRender(shapeRenderer, spriteBatch, font, camera);
+        }
     }
 
     @Override
@@ -198,20 +190,19 @@ public class GameScreen implements Screen {
     }
 
     public void debugTouch(int screenX, int screenY, int pointer, int button) {
-        if (button == 0) {
-            CoordinateUtil.touchToWorld(touchPoint.set(screenX, screenY), camera);
-            //Minion.getTarget(minion).nextPoint.set(touchPoint);
-            System.out.println(touchPoint + " " + pathFindingSystem.getGraph().getNode((int) touchPoint.x, (int) touchPoint.y).type);
-        } else if (button == 1) {
+        if (button == 1) {
             CoordinateUtil.touchToWorld(spawnPoint.set(screenX, screenY), camera);
-            FlatTiledNode node = pathFindingSystem.getGraph().getNode((int) spawnPoint.x, (int) spawnPoint.y);
-            if (node.type == TileType.EMPTY || node.type == TileType.FLOOR) {
-                node.type = TileType.TOWER;
+            PathFindingSystem.TileType tileType = pathFindingSystem.getTile((int) spawnPoint.x, (int) spawnPoint.y);
+            if (tileType == PathFindingSystem.TileType.EMPTY || tileType == PathFindingSystem.TileType.FLOOR) {
+                pathFindingSystem.setTile((int) spawnPoint.x, (int) spawnPoint.y, PathFindingSystem.TileType.TOWER, true);
                 Tower.newTower(spawnPoint.cpy());
-                pathFindingSystem.updateTile((int) spawnPoint.x, (int) spawnPoint.y, TileType.TOWER);
             } else {
-                System.out.println("can't place tower here: " + node.type);
+                System.out.println("can't place tower here: " + tileType);
             }
         }
+    }
+
+    public void toggleDebugRendering() {
+        debugRendering = !debugRendering;
     }
 }

@@ -18,6 +18,13 @@ public class CoordinateUtil {
         return point;
     }
 
+    public static Vector2 worldToTouch(Vector2 point, Camera camera) {
+        vector3.set(point, 0);
+        camera.project(vector3);
+        point.set(vector3.x, vector3.y);
+        return point;
+    }
+
     public static Vector2 alignToGrid(Vector2 input) {
         input.x = (int) (input.x) + 0.5f;
         input.y = (int) (input.y) + 0.5f;

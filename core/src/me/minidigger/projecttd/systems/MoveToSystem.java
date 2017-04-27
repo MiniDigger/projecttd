@@ -57,6 +57,7 @@ public class MoveToSystem extends IteratingSystem {
         if (distance <= 0.05) {
             velocity.linear.setZero();
             velocity.angular = 0;
+            path.nextPoint = null;
             return;
         }
 
