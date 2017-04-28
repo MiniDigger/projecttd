@@ -160,23 +160,15 @@ public class PathFindingSystem extends IteratingSystem {
     }
 
     private Vector2i[] getNeighbors(Vector2i node) {
-        Vector2i[] result = new Vector2i[8];
+        Vector2i[] result = new Vector2i[4];
         if (node.x < mapWidth - 1 && !visited[node.x + 1][node.y] &&
                 map[node.x + 1][node.y] == TileType.FLOOR) result[0] = new Vector2i(node.x + 1, node.y);
-        if (node.x < mapWidth - 1 && node.y < mapHeight - 1 && !visited[node.x + 1][node.y + 1] &&
-                map[node.x + 1][node.y + 1] == TileType.FLOOR) result[1] = new Vector2i(node.x + 1, node.y + 1);
         if (node.y < mapHeight - 1 && !visited[node.x][node.y + 1] &&
-                map[node.x][node.y + 1] == TileType.FLOOR) result[2] = new Vector2i(node.x, node.y + 1);
+                map[node.x][node.y + 1] == TileType.FLOOR) result[1] = new Vector2i(node.x, node.y + 1);
         if (node.x > 0 && !visited[node.x - 1][node.y] &&
-                map[node.x - 1][node.y] == TileType.FLOOR) result[3] = new Vector2i(node.x - 1, node.y);
-        if (node.x > 0 && node.y > 0 && !visited[node.x - 1][node.y - 1] &&
-                map[node.x - 1][node.y - 1] == TileType.FLOOR) result[4] = new Vector2i(node.x - 1, node.y - 1);
+                map[node.x - 1][node.y] == TileType.FLOOR) result[2] = new Vector2i(node.x - 1, node.y);
         if (node.y > 0 && !visited[node.x][node.y - 1] &&
-                map[node.x][node.y - 1] == TileType.FLOOR) result[5] = new Vector2i(node.x, node.y - 1);
-        if (node.x > 0 && node.y < mapHeight - 1 && !visited[node.x - 1][node.y + 1] &&
-                map[node.x - 1][node.y + 1] == TileType.FLOOR) result[6] = new Vector2i(node.x - 1, node.y + 1);
-        if (node.x < mapWidth - 1 && node.y > 0 && !visited[node.x + 1][node.y - 1] &&
-                map[node.x + 1][node.y - 1] == TileType.FLOOR) result[7] = new Vector2i(node.x + 1, node.y - 1);
+                map[node.x][node.y - 1] == TileType.FLOOR) result[3] = new Vector2i(node.x, node.y - 1);
         return result;
     }
 
