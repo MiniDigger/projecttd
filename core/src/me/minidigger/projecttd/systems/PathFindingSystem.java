@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -69,7 +70,6 @@ public class PathFindingSystem extends IteratingSystem {
     public void init(Vector2 goal) {
         goal = goal.set((int) goal.x, (int) goal.y);
         this.goal = goal; // save for later recalculation
-        System.out.println("recalc");
 
         cost = new int[mapWidth][mapHeight];
         visited = new boolean[mapWidth][mapHeight];
@@ -172,18 +172,12 @@ public class PathFindingSystem extends IteratingSystem {
         return result;
     }
 
-
-    @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
-    }
-
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         TransformComponent transformComponent = transformM.get(entity);
         PathComponent pathComponent = pathM.get(entity);
-        //  VelocityComponent velocityComponent = velocityM.get(entity);
 
+        // we still have a point to go to, no need to recalc it again
         if (pathComponent.nextPoint != null) {
             return;
         }
@@ -191,12 +185,17 @@ public class PathFindingSystem extends IteratingSystem {
         int x = (int) transformComponent.position.x;
         int y = (int) transformComponent.position.y;
 
+        // if goal reached, run action
         if (x == goal.x && y == goal.y) {
             pathComponent.nextPoint = null;
-            pathComponent.completed.run(entity);
-        } else if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
+            Gdx.app.postRunnable(() -> pathComponent.completed.run(entity));
+        }
+        // if in bound, next point
+        else if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
             pathComponent.nextPoint = new Vector2(x + 0.5f, y + 0.5f).add(direction[x][y]);
-        } else {
+        }
+        // do nothing
+        else {
             pathComponent.nextPoint = null;
         }
     }
@@ -211,8 +210,12 @@ public class PathFindingSystem extends IteratingSystem {
             }
         }
         shapeRenderer.end();
-        // costs + cords
+        // fps
         spriteBatch.begin();
+        font.setColor(Color.RED);
+        font.draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + "", 0, 15);
+        font.setColor(Color.WHITE);
+        // costs + cords
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 Vector2 point = new Vector2(x, y + 1);

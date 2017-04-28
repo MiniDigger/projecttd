@@ -20,10 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
-import me.minidigger.projecttd.systems.MoveToSystem;
-import me.minidigger.projecttd.systems.MovementSystem;
-import me.minidigger.projecttd.systems.PathFindingSystem;
-import me.minidigger.projecttd.systems.RenderSystem;
+import me.minidigger.projecttd.systems.*;
 import me.minidigger.projecttd.utils.CoordinateUtil;
 
 /**
@@ -32,7 +29,7 @@ import me.minidigger.projecttd.utils.CoordinateUtil;
 public class GameScreen implements Screen {
 
     private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
     private BitmapFont font = new BitmapFont();
@@ -66,7 +63,7 @@ public class GameScreen implements Screen {
 
         // renderer
         float unitScale = 1 / (float) tilewidth;
-        renderer = new OrthogonalTiledMapRenderer(map, unitScale);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map, unitScale);
         shapeRenderer = new ShapeRenderer();
 
         // camera
@@ -76,6 +73,7 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
+        engine.addSystem(new SpawnSystem(engine, mapHeight, 0.5f));
         engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth, map));
         engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
@@ -85,21 +83,6 @@ public class GameScreen implements Screen {
         setupEntities();
 
         pathFindingSystem.init(new Vector2(39.5f, mapHeight - 10 + 0.5f));
-
-        new Thread(() -> {
-            while (true) {
-                Entity minion = Minion.newMinion(new Vector2(1.5f, mapHeight - 0.5f - 5));
-                minion.getComponent(PathComponent.class).completed = (e) -> {
-                    engine.removeEntity(e);
-                    System.out.println("DIE");
-                };
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     private void setupEntities() {
@@ -124,25 +107,30 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        try {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.setView(camera);
-        renderer.render();
+            tiledMapRenderer.setView(camera);
+            tiledMapRenderer.render();
 
-        engine.update(delta);
+            engine.update(delta);
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.setProjectionMatrix(camera.combined);
 
-        if (debugRendering) {
-            // touch pos
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
-            shapeRenderer.end();
+            if (debugRendering) {
+                // touch pos
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.setColor(Color.RED);
+                shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
+                shapeRenderer.end();
 
-            // many things
-            pathFindingSystem.debugRender(shapeRenderer, spriteBatch, font, camera);
+                // many things
+                pathFindingSystem.debugRender(shapeRenderer, spriteBatch, font, camera);
+            }
+        } catch (Exception ex) {
+            System.err.println("exception while rendering screen");
+            ex.printStackTrace();
         }
     }
 
@@ -176,8 +164,9 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         map.dispose();
-        renderer.dispose();
+        tiledMapRenderer.dispose();
         shapeRenderer.dispose();
+        font.dispose();
     }
 
     public void panCamera(float deltaX) {
