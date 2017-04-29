@@ -3,6 +3,7 @@ package me.minidigger.projecttd.screens;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,11 +13,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import me.minidigger.projecttd.GameGestureProcessor;
+import me.minidigger.projecttd.GameInputProcessor;
+import me.minidigger.projecttd.ProjectTD;
 import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
@@ -53,6 +58,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        //input
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new GestureDetector(new GameGestureProcessor(this)));
+        multiplexer.addProcessor(new GameInputProcessor(this));
+        Gdx.input.setInputProcessor(multiplexer);
+
         // map
         map = new TmxMapLoader().load("maps/map01.tmx");
 
