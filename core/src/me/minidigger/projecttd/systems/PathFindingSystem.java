@@ -14,9 +14,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import me.minidigger.projecttd.components.PathComponent;
-import me.minidigger.projecttd.components.TargetComponent;
 import me.minidigger.projecttd.components.TransformComponent;
-import me.minidigger.projecttd.components.VelocityComponent;
 import me.minidigger.projecttd.utils.CoordinateUtil;
 import me.minidigger.projecttd.utils.Vector2i;
 
@@ -38,12 +36,11 @@ public class PathFindingSystem extends IteratingSystem {
 
     private Vector2 goal;
 
-    private ComponentMapper<VelocityComponent> velocityM = ComponentMapper.getFor(VelocityComponent.class);
     private ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
     private ComponentMapper<PathComponent> pathM = ComponentMapper.getFor(PathComponent.class);
 
     public PathFindingSystem(int mapHeight, int mapWidth, TiledMap tiledMap) {
-        super(Family.all(PathComponent.class, TargetComponent.class, TransformComponent.class).get());
+        super(Family.all(PathComponent.class, TransformComponent.class).get());
 
         this.mapHeight = mapHeight;
         this.mapWidth = mapWidth;
