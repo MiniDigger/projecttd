@@ -69,7 +69,7 @@ public class MainMenuScreen implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("settings"); // TODO settings
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new OptionsScreen());
             }
         });
         table.add(settingsButton);
@@ -81,7 +81,7 @@ public class MainMenuScreen implements Screen {
         creditsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("credits"); //TODO credits
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new CreditsScreen());
             }
         });
         table.add(creditsButton);
@@ -131,6 +131,5 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
     }
 }
