@@ -1,18 +1,17 @@
 package me.minidigger.projecttd.scenes;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
-import me.minidigger.projecttd.ProjectTD;
+import me.minidigger.projecttd.utils.ArcRenderer;
+import me.minidigger.projecttd.utils.RingButton;
 
 /**
  * Created by Martin on 30/04/2017.
@@ -28,8 +27,10 @@ public class HudScene implements Disposable {
     private Label scoreLabel;
     private Label balanceLabel;
 
+    private RingButton ringButton;
 
-    public HudScene(SpriteBatch batch) {
+
+    public HudScene(SpriteBatch batch, ShapeRenderer shapeRenderer, ArcRenderer arcRenderer) {
         this.batch = batch;
         stage = new Stage();
 
@@ -48,6 +49,11 @@ public class HudScene implements Disposable {
         table.add(balanceLabel).align(Align.right).expandX();
 
         stage.addActor(table);
+
+
+        ringButton = new RingButton(shapeRenderer, arcRenderer);
+        ringButton.setBounds(10, 10, 100, 100);
+        stage.addActor(ringButton);
     }
 
     public void setScore(int score) {

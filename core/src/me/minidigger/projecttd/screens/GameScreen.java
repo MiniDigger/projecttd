@@ -26,6 +26,7 @@ import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
 import me.minidigger.projecttd.scenes.HudScene;
 import me.minidigger.projecttd.systems.*;
+import me.minidigger.projecttd.utils.ArcRenderer;
 import me.minidigger.projecttd.utils.CoordinateUtil;
 
 /**
@@ -36,7 +37,8 @@ public class GameScreen implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
-    private ShapeRenderer shapeRenderer;
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private ArcRenderer arcRenderer = new ArcRenderer();
     private BitmapFont font = new BitmapFont();
     private SpriteBatch spriteBatch = new SpriteBatch();
     private HudScene hud;
@@ -61,7 +63,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         // ui
-        hud = new HudScene(spriteBatch);
+        hud = new HudScene(spriteBatch, shapeRenderer, arcRenderer);
 
         //input
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -81,7 +83,6 @@ public class GameScreen implements Screen {
         // renderer
         float unitScale = 1 / (float) tilewidth;
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map, unitScale);
-        shapeRenderer = new ShapeRenderer();
 
         // camera
         camera = new OrthographicCamera();
@@ -135,6 +136,7 @@ public class GameScreen implements Screen {
             engine.update(delta);
 
             shapeRenderer.setProjectionMatrix(camera.combined);
+            arcRenderer.setProjectionMatrix(camera.combined);
 
             if (debugRendering) {
                 // touch pos
