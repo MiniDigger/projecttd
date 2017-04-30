@@ -1,6 +1,5 @@
 package me.minidigger.projecttd.screens;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -21,8 +20,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import me.minidigger.projecttd.GameGestureProcessor;
 import me.minidigger.projecttd.GameInputProcessor;
-import me.minidigger.projecttd.ProjectTD;
-import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
 import me.minidigger.projecttd.systems.*;
@@ -55,6 +52,7 @@ public class GameScreen implements Screen {
     private boolean debugRendering = false;
 
     private PathFindingSystem pathFindingSystem;
+    private TurretSystem turretSystem;
 
     @Override
     public void show() {
@@ -85,6 +83,7 @@ public class GameScreen implements Screen {
         // ecs
         engine = new PooledEngine();
         engine.addSystem(new SpawnSystem(engine, mapHeight, 0.5f));
+        engine.addSystem(turretSystem = new TurretSystem());
         engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth, map));
         engine.addSystem(new MoveToSystem());
         engine.addSystem(new MovementSystem());
@@ -136,8 +135,10 @@ public class GameScreen implements Screen {
                 shapeRenderer.circle(touchPoint.x, touchPoint.y, 0.1f, 16);
                 shapeRenderer.end();
 
-                // many things
+                // many things (tiles, fps, vector field, cost array)
                 pathFindingSystem.debugRender(shapeRenderer, spriteBatch, font, camera);
+                // more many things (turrets, targets)
+                turretSystem.debugRender(shapeRenderer);
             }
         } catch (Exception ex) {
             System.err.println("exception while rendering screen");

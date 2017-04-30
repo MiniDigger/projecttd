@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import me.minidigger.projecttd.components.SpriteComponent;
 import me.minidigger.projecttd.components.TransformComponent;
+import me.minidigger.projecttd.components.TurretComponent;
+import me.minidigger.projecttd.systems.TurretSystem;
 import me.minidigger.projecttd.utils.CoordinateUtil;
 
 /**
@@ -28,6 +30,9 @@ public class Tower {
         TransformComponent transformComponent = ENGINE.createComponent(TransformComponent.class);
         transformComponent.position = spawn;
         entity.add(transformComponent);
+
+        TurretComponent turretComponent = ENGINE.createComponent(TurretComponent.class);
+        entity.add(turretComponent);
 
         ENGINE.addEntity(entity);
         return entity;

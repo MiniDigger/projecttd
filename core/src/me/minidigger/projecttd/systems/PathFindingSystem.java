@@ -185,14 +185,23 @@ public class PathFindingSystem extends IteratingSystem {
         // if goal reached, run action
         if (x == goal.x && y == goal.y) {
             pathComponent.nextPoint = null;
+            pathComponent.tilesToGoal = 0;
             Gdx.app.postRunnable(() -> pathComponent.completed.run(entity));
         }
         // if in bound, next point
         else if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
-            pathComponent.nextPoint = new Vector2(x + 0.5f, y + 0.5f).add(direction[x][y]);
+            Vector2 dir = direction[x][y];
+            if (dir.isZero()) {
+                System.out.println("No path");
+                pathComponent.tilesToGoal = -1;
+            } else {
+                pathComponent.tilesToGoal = cost[x][y];
+                pathComponent.nextPoint = new Vector2(x + 0.5f, y + 0.5f).add(dir);
+            }
         }
         // do nothing
         else {
+            pathComponent.tilesToGoal = -1;
             pathComponent.nextPoint = null;
         }
     }
