@@ -73,7 +73,7 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         // map
-        map = new TmxMapLoader().load("maps/map01.tmx");
+        map = new TmxMapLoader().load("maps/map02.tmx");
 
         mapHeight = map.getProperties().get("height", 40, int.class);
         mapWidth = map.getProperties().get("width", 15, int.class);

@@ -62,9 +62,7 @@ public class TurretSystem extends IteratingSystem {
             }
         }
 
-        if (currentFav != null) {
-            turretComponent.target = currentFav;
-        }
+        turretComponent.target = currentFav;
 
         // shooting
         //TODO shooting with attack speed and stuff
