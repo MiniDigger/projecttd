@@ -21,6 +21,10 @@ public class LevelManager {
             Texture texture = new Texture(Gdx.files.internal("badlogic.jpg"));
             Drawable thumb = new TextureRegionDrawable(new TextureRegion(texture));
             levels.add(new Level("Map 1", "map01.tmx", "MiniDigger", thumb));
+
+            Texture texture2 = new Texture(Gdx.files.internal("badlogic.jpg"));
+            Drawable thumb2 = new TextureRegionDrawable(new TextureRegion(texture2));
+            levels.add(new Level("Map 2", "map02.tmx", "MiniDigger", thumb2));
         }
         return levels;
     }

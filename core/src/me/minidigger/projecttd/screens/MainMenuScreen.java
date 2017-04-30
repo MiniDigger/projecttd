@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import me.minidigger.projecttd.level.LevelManager;
 
 /**
  * Created by Martin on 29/04/2017.
@@ -33,7 +34,9 @@ public class MainMenuScreen implements Screen {
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
+                GameScreen gameScreen = new GameScreen();
+                gameScreen.level = LevelManager.getInstance().getLevels().get(0);
+                ((Game) Gdx.app.getApplicationListener()).setScreen(gameScreen);
             }
         });
         table.add(newGameButton);

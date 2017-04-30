@@ -24,6 +24,7 @@ import me.minidigger.projecttd.GameGestureProcessor;
 import me.minidigger.projecttd.GameInputProcessor;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
+import me.minidigger.projecttd.level.Level;
 import me.minidigger.projecttd.scenes.HudScene;
 import me.minidigger.projecttd.systems.*;
 import me.minidigger.projecttd.utils.ArcRenderer;
@@ -60,6 +61,8 @@ public class GameScreen implements Screen {
     private PathFindingSystem pathFindingSystem;
     private TurretSystem turretSystem;
 
+    public Level level;
+
     @Override
     public void show() {
         // ui
@@ -73,7 +76,7 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         // map
-        map = new TmxMapLoader().load("maps/map02.tmx");
+        map = new TmxMapLoader().load("maps/" + level.getFile());
 
         mapHeight = map.getProperties().get("height", 40, int.class);
         mapWidth = map.getProperties().get("width", 15, int.class);
