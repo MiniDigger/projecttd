@@ -18,10 +18,13 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.kotcrab.vis.ui.VisUI;
 import me.minidigger.projecttd.GameGestureProcessor;
 import me.minidigger.projecttd.GameInputProcessor;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.entities.Tower;
+import me.minidigger.projecttd.scenes.HudScene;
 import me.minidigger.projecttd.systems.*;
 import me.minidigger.projecttd.utils.CoordinateUtil;
 
@@ -36,6 +39,7 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private BitmapFont font = new BitmapFont();
     private SpriteBatch spriteBatch = new SpriteBatch();
+    private HudScene hud;
 
     private int mapHeight;
     private int mapWidth;
@@ -56,8 +60,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        // ui
+        hud = new HudScene(spriteBatch);
+
         //input
         InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(hud.getStage());
         multiplexer.addProcessor(new GestureDetector(new GameGestureProcessor(this)));
         multiplexer.addProcessor(new GameInputProcessor(this));
         Gdx.input.setInputProcessor(multiplexer);
@@ -140,6 +148,9 @@ public class GameScreen implements Screen {
                 // more many things (turrets, targets)
                 turretSystem.debugRender(shapeRenderer);
             }
+
+            // ui
+            hud.render();
         } catch (Exception ex) {
             System.err.println("exception while rendering screen");
             ex.printStackTrace();
@@ -179,6 +190,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.dispose();
         shapeRenderer.dispose();
         font.dispose();
+        VisUI.dispose();
     }
 
     public void panCamera(float deltaX) {
@@ -205,5 +217,10 @@ public class GameScreen implements Screen {
 
     public void toggleDebugRendering() {
         debugRendering = !debugRendering;
+    }
+
+
+    private void setupUI() {
+
     }
 }

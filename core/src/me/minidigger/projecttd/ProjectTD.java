@@ -5,6 +5,9 @@ import me.minidigger.projecttd.screens.MainMenuScreen;
 
 public class ProjectTD extends Game {
 
+    public static final int V_WIDTH = 640;
+    public static final int V_HEIGHT = 480;
+
     @Override
     public void create() {
         //Gdx.app.setLogLevel(Application.LOG_DEBUG);
