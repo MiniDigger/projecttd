@@ -23,6 +23,7 @@ public class RingButton extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if(true) return;//TODO implement ring button
         arcRenderer.begin(ArcRenderer.ShapeType.Filled);
         arcRenderer.setColor(getColor());
 
