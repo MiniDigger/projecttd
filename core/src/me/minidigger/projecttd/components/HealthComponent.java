@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Pool;
  */
 public class HealthComponent implements Component, Pool.Poolable {
 
-    public double health = 100;
+    public float health = 100;
 
     @Override
     public void reset() {

@@ -41,4 +41,10 @@ public class Minion {
         ENGINE.addEntity(entity);
         return entity;
     }
+
+    public enum MinionType{
+        LAND,
+        WATER,
+        AIR;
+    }
 }
