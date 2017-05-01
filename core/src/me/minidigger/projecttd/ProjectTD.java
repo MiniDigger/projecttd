@@ -1,6 +1,7 @@
 package me.minidigger.projecttd;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import me.minidigger.projecttd.screens.MainMenuScreen;
 
 public class ProjectTD extends Game {

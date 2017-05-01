@@ -29,7 +29,6 @@ public class HudScene implements Disposable {
 
     private RingButton ringButton;
 
-
     public HudScene(SpriteBatch batch, ShapeRenderer shapeRenderer, ArcRenderer arcRenderer) {
         this.batch = batch;
         stage = new Stage();
@@ -57,13 +56,12 @@ public class HudScene implements Disposable {
     }
 
     public void setScore(int score) {
-        this.score = score;
-        scoreLabel.setText(String.format("%06d", score) + " PTS");
+        scoreLabel.setText(score + " PTS");
     }
 
     public void setBalance(int balance) {
         this.balance = balance;
-        balanceLabel.setText(String.format("%06d", balance) + " $");
+        balanceLabel.setText(balance + " $");
     }
 
     @Override
