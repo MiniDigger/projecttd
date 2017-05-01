@@ -35,6 +35,9 @@ public class Minion {
         PathComponent pathComponent = ENGINE.createComponent(PathComponent.class);
         entity.add(pathComponent);
 
+        MinionComponent minionComponent = ENGINE.createComponent(MinionComponent.class);
+        entity.add(minionComponent);
+
         ENGINE.addEntity(entity);
         return entity;
     }

@@ -63,6 +63,12 @@ public class GameScreen implements Screen {
 
     public Level level;
 
+    public static GameScreen INSTANCE;
+
+    public GameScreen() {
+        INSTANCE = this;
+    }
+
     @Override
     public void show() {
         // ui
@@ -94,7 +100,7 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
-        engine.addSystem(new SpawnSystem(engine, mapHeight, 0.5f));
+        engine.addSystem(new SpawnSystem(engine, mapHeight, 5.5f));
         engine.addSystem(turretSystem = new TurretSystem());
         engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth, map));
         engine.addSystem(new MoveToSystem());
@@ -227,5 +233,9 @@ public class GameScreen implements Screen {
 
     private void setupUI() {
 
+    }
+
+    public void updateBalance(int money) {
+        hud.setBalance(hud.getBalance() + money);
     }
 }

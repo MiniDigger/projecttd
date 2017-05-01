@@ -14,6 +14,8 @@ public class TurretComponent implements Component, Poolable {
     public float range = 2;
     public float attackSpeed = 1;
     public TargetSelectionStrategy strategy = TargetSelectionStrategy.FIRST;
+    public float attackCooldown = 0;
+    public float attackDamage = 10;
 
     @Override
     public void reset() {
@@ -21,5 +23,7 @@ public class TurretComponent implements Component, Poolable {
         range = 1;
         attackSpeed = 1;
         strategy = TargetSelectionStrategy.FIRST;
+        attackCooldown = 0;
+        attackDamage = 10;
     }
 }

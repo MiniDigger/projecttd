@@ -81,4 +81,8 @@ public class HudScene implements Disposable {
         stage.act();
         stage.draw();
     }
+
+    public int getBalance() {
+        return balance;
+    }
 }

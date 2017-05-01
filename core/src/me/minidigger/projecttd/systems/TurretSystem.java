@@ -1,17 +1,12 @@
 package me.minidigger.projecttd.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import me.minidigger.projecttd.components.HealthComponent;
-import me.minidigger.projecttd.components.PathComponent;
-import me.minidigger.projecttd.components.TransformComponent;
-import me.minidigger.projecttd.components.TurretComponent;
+import me.minidigger.projecttd.components.*;
+import me.minidigger.projecttd.screens.GameScreen;
 import me.minidigger.projecttd.utils.Pair;
 
 /**
@@ -21,6 +16,7 @@ public class TurretSystem extends IteratingSystem {
 
     private ComponentMapper<TurretComponent> turretM = ComponentMapper.getFor(TurretComponent.class);
     private ComponentMapper<TransformComponent> transformM = ComponentMapper.getFor(TransformComponent.class);
+    private ComponentMapper<MinionComponent> minionM = ComponentMapper.getFor(MinionComponent.class);
 
     private static ComponentMapper<PathComponent> pathM = ComponentMapper.getFor(PathComponent.class);
     private static ComponentMapper<HealthComponent> healthM = ComponentMapper.getFor(HealthComponent.class);
@@ -65,7 +61,23 @@ public class TurretSystem extends IteratingSystem {
         turretComponent.target = currentFav;
 
         // shooting
-        //TODO shooting with attack speed and stuff
+        turretComponent.attackCooldown -= deltaTime;
+        if (turretComponent.attackCooldown <= 0) {
+            if (turretComponent.target != null && !turretComponent.target.isScheduledForRemoval()) {
+                // do attack
+                turretComponent.attackCooldown = turretComponent.attackSpeed;
+
+                HealthComponent healthComponent = healthM.get(turretComponent.target);
+                healthComponent.health -= turretComponent.attackDamage;
+                // death
+                if (healthComponent.health <= 0) {
+                    MinionComponent minionComponent = minionM.get(turretComponent.target);
+                    getEngine().removeEntity(turretComponent.target);
+                    turretComponent.target = null;
+                    GameScreen.INSTANCE.updateBalance(minionComponent.money);
+                }
+            }
+        }
     }
 
     public void debugRender(ShapeRenderer shapeRenderer) {
@@ -88,7 +100,9 @@ public class TurretSystem extends IteratingSystem {
 
             if (turretComponent.target != null) {
                 TransformComponent targetTransform = transformM.get(turretComponent.target);
-                shapeRenderer.circle(targetTransform.position.x, targetTransform.position.y, 0.1f, 10);
+                if (targetTransform != null) {
+                    shapeRenderer.circle(targetTransform.position.x, targetTransform.position.y, 0.1f, 10);
+                }
             }
         }
         shapeRenderer.end();
