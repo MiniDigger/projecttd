@@ -111,49 +111,37 @@ public class TurretSystem extends IteratingSystem {
 
     public interface TargetSelectionStrategy {
         TargetSelectionStrategy NEAREST = (current, data, dst, target) -> {
-            if (data == -1 || dst < data) {
-                return new Pair<>(target, dst);
-            }
-            return new Pair<>(current, data);
+            boolean exp = data == -1 || dst <= data;
+            return exp ? Pair.of(target, dst) : Pair.of(current, data);
         };
 
         TargetSelectionStrategy FURTHEST = (current, data, dst, target) -> {
-            if (data == -1 || dst > data) {
-                return new Pair<>(target, dst);
-            }
-            return new Pair<>(current, data);
+            boolean exp = data == -1 || dst > data;
+            return exp ? Pair.of(target, dst) : Pair.of(current, data);
         };
 
         TargetSelectionStrategy FIRST = (current, data, dst, target) -> {
-            PathComponent pathComponent = pathM.get(target);
-            if (data == -1 || pathComponent.tilesToGoal < data) {
-                return new Pair<>(target, dst);
-            }
-            return new Pair<>(current, data);
+            float tilesToGoal = pathM.get(target).tilesToGoal;
+            boolean exp = data == -1 || tilesToGoal <= data;
+            return exp ? Pair.of(target, tilesToGoal) : Pair.of(current, data);
         };
 
         TargetSelectionStrategy LAST = (current, data, dst, target) -> {
-            PathComponent pathComponent = pathM.get(target);
-            if (data == -1 || pathComponent.tilesToGoal > data) {
-                return new Pair<>(target, dst);
-            }
-            return new Pair<>(current, data);
-        };
-
-        TargetSelectionStrategy MAX_HEALTH = (current, data, dst, target) -> {
-            HealthComponent healthComponent = healthM.get(target);
-            if (data == -1 || healthComponent.health > data) {
-                return new Pair<>(target, dst);
-            }
-            return new Pair<>(current, data);
+            float tilesToGoal = pathM.get(target).tilesToGoal;
+            boolean exp = data == -1 || tilesToGoal > data;
+            return exp ? Pair.of(target, tilesToGoal) : Pair.of(current, data);
         };
 
         TargetSelectionStrategy MIN_HEALTH = (current, data, dst, target) -> {
-            HealthComponent healthComponent = healthM.get(target);
-            if (data == -1 || healthComponent.health > data) {
-                return new Pair<>(target, dst);
-            }
-            return new Pair<>(current, data);
+            float health = healthM.get(target).health;
+            boolean exp = data == -1 || health <= data;
+            return exp ? Pair.of(target, health) : Pair.of(current, data);
+        };
+
+        TargetSelectionStrategy MAX_HEALTH = (current, data, dst, target) -> {
+            float health = healthM.get(target).health;
+            boolean exp = data == -1 || health > data;
+            return exp ? Pair.of(target, health) : Pair.of(current, data);
         };
 
         Pair<Entity, Float> calculate(Entity currentFav, float currentFavData, float dst, Entity target);
