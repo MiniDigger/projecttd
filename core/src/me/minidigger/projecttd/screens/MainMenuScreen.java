@@ -48,7 +48,7 @@ public class MainMenuScreen implements Screen {
         levelSelectButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LeveSelectScreen());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelSelectScreen());
             }
         });
         table.add(levelSelectButton);

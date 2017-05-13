@@ -1,0 +1,40 @@
+{
+  "name": "Map 2",
+  "file": "map02.tmx",
+  "author": "MiniDigger",
+  "thumbnail": "badlogic.jpg",
+  "waves": [
+    {
+      "groups": [
+        {
+          "delay": 5.0,
+          "interval": 1.0,
+          "health": 100.0,
+          "speed": 1.0,
+          "type": "LAND",
+          "count": 10
+        },
+        {
+          "delay": 20.0,
+          "interval": 2.0,
+          "health": 300.0,
+          "speed": 0.5,
+          "type": "LAND",
+          "count": 5
+        },
+        {
+          "delay": 30.0,
+          "interval": 1.0,
+          "health": 1000.0,
+          "speed": 0.3,
+          "type": "LAND",
+          "count": 1
+        }
+      ],
+      "name": "Wave 1",
+      "type": "NORMAL",
+      "points": 100,
+      "money": 10.0
+    }
+  ]
+}

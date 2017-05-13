@@ -5,10 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.building.CenteredTableBuilder;
 import com.kotcrab.vis.ui.building.utilities.Padding;
@@ -20,7 +24,7 @@ import me.minidigger.projecttd.level.LevelManager;
 /**
  * Created by Martin on 29/04/2017.
  */
-public class LeveSelectScreen implements Screen {
+public class LevelSelectScreen implements Screen {
 
     private Stage stage;
 
@@ -39,7 +43,9 @@ public class LeveSelectScreen implements Screen {
         stage.addActor(heading);
 
         for (Level level : LevelManager.getInstance().getLevels()) {
-            VisImageButton levelButton = new VisImageButton(level.getThumbnail(), level.getName());
+            Texture texture = new Texture(Gdx.files.internal(level.getThumbnail()));
+            Drawable thumb = new TextureRegionDrawable(new TextureRegion(texture));
+            VisImageButton levelButton = new VisImageButton(thumb, level.getName());
             levelButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

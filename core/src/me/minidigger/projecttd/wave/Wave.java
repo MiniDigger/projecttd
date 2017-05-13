@@ -8,13 +8,16 @@ import java.util.List;
  */
 public class Wave {
 
-    private List<WaveGroup> groups = new ArrayList<>();
+    private List<WaveGroup> groups;
     private String name;
-    private WaveType type;
-    private int points;
-    private float money;
+    private WaveType type = WaveType.NORMAL;
+    private int points = 100;
+    private float money = 10;
 
-    public void addGroup(WaveGroup group){
+    public void addGroup(WaveGroup group) {
+        if (groups == null) {
+            groups = new ArrayList<>();
+        }
         groups.add(group);
     }
 
@@ -48,5 +51,13 @@ public class Wave {
 
     public float getMoney() {
         return money;
+    }
+
+    public List<WaveGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<WaveGroup> groups) {
+        this.groups = groups;
     }
 }
