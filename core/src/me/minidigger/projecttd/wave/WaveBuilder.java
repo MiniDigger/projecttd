@@ -63,6 +63,26 @@ public class WaveBuilder {
         return this;
     }
 
+    public WaveBuilder name(String name) {
+        wave.setName(name);
+        return this;
+    }
+
+    public WaveBuilder waveType(WaveType type) {
+        wave.setType(type);
+        return this;
+    }
+
+    public WaveBuilder points(int points){
+        wave.setPoints(points);
+        return this;
+    }
+
+    public WaveBuilder money(float amount){
+        wave.setMoney(amount);
+        return this;
+    }
+
     public Wave build() {
         if (group != null) {
             wave.addGroup(group);
@@ -75,14 +95,13 @@ public class WaveBuilder {
             throw new IllegalStateException("Need to create a new group using #group() first!");
         }
     }
-    
-    //TODO name/number, type (Boss?), reward (points and money)
 
     public void test() {
-        // new WaveBuilder()
-        // .group().delay(5).interval(1).health(100).speed(1).type(Minion.MinionType.LAND).count(10).sprite(minionSprite)
-        // .group().delay(20).interval(2).health(300).speed(0.5f).type(Minion.MinionType.LAND).count(5).sprite(smallTankSprite)
-        // .group().delay(30).interval(1).health(1000).speed(0.3f).type(Minion.MinionType.LAND).count(1).sprite(bigTankSprite)
-        // .build();
+        Sprite minionSprite = null, smallTankSprite = null, bigTankSprite = null;
+        new WaveBuilder().name("Wave 1").waveType(WaveType.NORMAL).points(100).money(10)
+                .group().delay(5).interval(1).health(100).speed(1).type(Minion.MinionType.LAND).count(10).sprite(minionSprite)
+                .group().delay(20).interval(2).health(300).speed(0.5f).type(Minion.MinionType.LAND).count(5).sprite(smallTankSprite)
+                .group().delay(30).interval(1).health(1000).speed(0.3f).type(Minion.MinionType.LAND).count(1).sprite(bigTankSprite)
+                .build();
     }
 }
