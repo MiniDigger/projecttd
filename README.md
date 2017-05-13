@@ -1,7 +1,8 @@
 # projecttd
 
 A line tower wars remake (remmeber, that warcraft 3 map everybody wasted houndrets on nights on) in java using libgdx.  
-Currently targeting desktop (its java, so windows, linux, mac, whatever works), android and browser (via GWT, a java to js transpiler).
+Currently targeting desktop (its java, so windows, linux, mac, whatever works), android and browser (via GWT, a java to js transpiler).  
+Imgur album with progress updates: https://imgur.com/a/0FReW
 
 # building
 
@@ -19,4 +20,4 @@ currently using a tileset by kenny.nl, go check his stuff out!
 # license
 
 its MIT, so yeah.  
-(if you don't know what that means, go check out githubs nice new lil explainy thingy [here](LICENSE.md)
+(if you don't know what that means, go check out githubs nice new lil explainy thingy [here](LICENSE.md))
