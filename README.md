@@ -1,9 +1,8 @@
 # projecttd
 
-A line tower wars remake (remmeber, that warcraft 3 map everybody wasted houndrets on nights on) in java using libgdx.  
-Currently targeting desktop (its java, so windows, linux, mac, whatever works), android and browser (via GWT, a java to js transpiler).  
+A line tower wars remake (remember, that warcraft 3 map everybody wasted hundreds of nights on) in java using libgdx.  
+Currently targeting desktop (its java, so windows, linux, mac, whatever works), android and browser (via GWT, a java to js transpiler).
 Imgur album with progress updates: https://imgur.com/a/0FReW
-
 # building
 
 Well, go figure, it uses gradle. Works as usual.  
