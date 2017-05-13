@@ -100,6 +100,7 @@ public class GameScreen implements Screen {
 
         // ecs
         engine = new PooledEngine();
+        engine.addSystem(new WaveSystem(level));
         engine.addSystem(new SpawnSystem(engine, mapHeight, 5.5f));
         engine.addSystem(turretSystem = new TurretSystem());
         engine.addSystem(pathFindingSystem = new PathFindingSystem(mapHeight, mapWidth, map));
