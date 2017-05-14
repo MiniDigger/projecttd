@@ -239,4 +239,8 @@ public class GameScreen implements Screen {
     public void updateBalance(int money) {
         hud.setBalance(hud.getBalance() + money);
     }
+
+    public void updatePoints(int points) {
+        hud.setScore(hud.getScore() + points);
+    }
 }

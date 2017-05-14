@@ -8,9 +8,11 @@ import com.badlogic.gdx.ai.utils.ArithmeticUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import me.minidigger.projecttd.components.MinionComponent;
 import me.minidigger.projecttd.components.PathComponent;
 import me.minidigger.projecttd.components.TransformComponent;
 import me.minidigger.projecttd.components.VelocityComponent;
+import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.utils.VectorUtil;
 
 /**
@@ -21,12 +23,12 @@ public class MoveToSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> pm = ComponentMapper.getFor(TransformComponent.class);
     private ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
     private ComponentMapper<PathComponent> pathM = ComponentMapper.getFor(PathComponent.class);
+    private ComponentMapper<MinionComponent> minionM = ComponentMapper.getFor(MinionComponent.class);
 
     private Vector2 temp = new Vector2();
 
     private float linearAccelerationTime = 0.1f;
     private float maxLinearAcceleration = 3f;
-    private float maxLinearSpeed = 6f;
 
     private float zeroThreshold = 0.001f;
 
@@ -43,6 +45,7 @@ public class MoveToSystem extends IteratingSystem {
         TransformComponent transform = pm.get(entity);
         VelocityComponent velocity = vm.get(entity);
         PathComponent path = pathM.get(entity);
+        MinionComponent minionComponent = minionM.get(entity);
 
         if (path.nextPoint == null) {
             velocity.linear.setZero();
@@ -61,8 +64,10 @@ public class MoveToSystem extends IteratingSystem {
             return;
         }
 
+        float maxSpeed = minionComponent.speed;
+        System.out.println("speed " + maxSpeed);
         // Target velocity combines speed and direction
-        Vector2 targetVelocity = toTarget.scl(maxLinearSpeed / distance); // Optimized code for:
+        Vector2 targetVelocity = toTarget.scl(maxSpeed / distance); // Optimized code for:
         // toTarget.nor().scl(maxSpeed)
 
         // Acceleration tries to get to the nextPoint velocity without exceeding max acceleration

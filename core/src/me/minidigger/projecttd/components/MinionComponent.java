@@ -12,11 +12,13 @@ public class MinionComponent implements Component, Pool.Poolable {
     public int money = 1;
     public float speed = 1f;
     public Minion.MinionType type = Minion.MinionType.LAND;
+    public int points = 10;
 
     @Override
     public void reset() {
         money = 1;
         speed = 1f;
         type = Minion.MinionType.LAND;
+        points = 10;
     }
 }

@@ -83,4 +83,8 @@ public class HudScene implements Disposable {
     public int getBalance() {
         return balance;
     }
+
+    public int getScore() {
+        return score;
+    }
 }

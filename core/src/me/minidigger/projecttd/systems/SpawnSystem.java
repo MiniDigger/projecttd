@@ -24,10 +24,10 @@ public class SpawnSystem extends IntervalSystem {
 
     @Override
     protected void updateInterval() {
-        Entity minion = Minion.newMinion(new Vector2(1.5f, mapHeight - 0.5f - 5));
-        minion.getComponent(PathComponent.class).completed = (e) -> {
-            // potential race condition here, but who cares? this is debug code
-            engine.removeEntity(e);
-        };
+//        Entity minion = Minion.newMinion(new Vector2(1.5f, mapHeight - 0.5f - 5));
+//        minion.getComponent(PathComponent.class).completed = (e) -> {
+//            // potential race condition here, but who cares? this is debug code
+//            engine.removeEntity(e);
+//        };
     }
 }

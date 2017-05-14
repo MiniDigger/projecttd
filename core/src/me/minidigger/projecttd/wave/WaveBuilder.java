@@ -47,13 +47,4 @@ public class WaveBuilder {
 
         return wave;
     }
-
-    public void test() {
-        Sprite minionSprite = null, smallTankSprite = null, bigTankSprite = null;
-        new WaveBuilder().name("Wave 1").waveType(WaveType.NORMAL).points(100).money(10)
-                .group().delay(5).interval(1).health(100).speed(1).type(Minion.MinionType.LAND).count(10).sprite(minionSprite).finish()
-                .group().delay(20).interval(2).health(300).speed(0.5f).type(Minion.MinionType.LAND).count(5).sprite(smallTankSprite).finish()
-                .group().delay(30).interval(1).health(1000).speed(0.3f).type(Minion.MinionType.LAND).count(1).sprite(bigTankSprite).finish()
-                .build();
-    }
 }

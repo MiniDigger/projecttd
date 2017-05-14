@@ -9,9 +9,11 @@ import com.badlogic.gdx.utils.Pool;
 public class HealthComponent implements Component, Pool.Poolable {
 
     public float health = 100;
+    public Runnable deathTrigger;
 
     @Override
     public void reset() {
         health = 100;
+        deathTrigger = null;
     }
 }

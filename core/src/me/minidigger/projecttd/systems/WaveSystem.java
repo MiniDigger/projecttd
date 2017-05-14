@@ -1,9 +1,15 @@
 package me.minidigger.projecttd.systems;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import me.minidigger.projecttd.components.HealthComponent;
+import me.minidigger.projecttd.components.MinionComponent;
+import me.minidigger.projecttd.components.PathComponent;
+import me.minidigger.projecttd.components.SpriteComponent;
 import me.minidigger.projecttd.entities.Minion;
 import me.minidigger.projecttd.level.Level;
 import me.minidigger.projecttd.wave.Wave;
@@ -21,11 +27,18 @@ public class WaveSystem extends EntitySystem {
     //TODO detect when wave is over and next one should start
 
     private Wave activeWave;
+    private int totalEntities = 0;
+    private int deadEntities = 0;
+    private int progress = 0;
     private Map<Integer, WaveGroup> groups = new HashMap<>();
     private Map<Integer, Float> intervals = new HashMap<>();
     private Map<Integer, Integer> counts = new HashMap<>();
     private Map<Integer, Float> accumulator = new HashMap<>();
     private Map<Integer, Status> statusMap = new HashMap<>();
+
+    private ComponentMapper<HealthComponent> healthM = ComponentMapper.getFor(HealthComponent.class);
+    private ComponentMapper<MinionComponent> minionM = ComponentMapper.getFor(MinionComponent.class);
+    private ComponentMapper<SpriteComponent> spriteM = ComponentMapper.getFor(SpriteComponent.class);
 
     public WaveSystem(Level level) {
         this.level = level;
@@ -36,6 +49,10 @@ public class WaveSystem extends EntitySystem {
 
     public void setActiveWave(Wave activeWave) {
         this.activeWave = activeWave;
+
+        totalEntities = 0;
+        deadEntities = 0;
+        progress = 0;
 
         groups = new HashMap<>();
         intervals = new HashMap<>();
@@ -51,6 +68,8 @@ public class WaveSystem extends EntitySystem {
             counts.put(i, group.getCount());
             accumulator.put(i, 0f);
             statusMap.put(i, Status.INITIAL_DELAY);
+
+            totalEntities += group.getCount();
         }
     }
 
@@ -90,7 +109,7 @@ public class WaveSystem extends EntitySystem {
                 } else {
                     counts.put(id, count);
                 }
-                spawn(group.getHealth(), group.getSpeed(), group.getSprite(), group.getType());
+                spawn(group.getHealth(), group.getSpeed(), group.getMoney(), group.getPoints(), group.getSprite(), group.getType(), group.getSpawn(), group.getGoal());
                 break;
             case ENDED:
                 Gdx.app.log("DEBUG", "Group " + id + ": Its over");
@@ -99,8 +118,42 @@ public class WaveSystem extends EntitySystem {
         }
     }
 
-    private void spawn(float health, float speed, Sprite sprite, Minion.MinionType type) {
-        Gdx.app.log("DEBUG", "Spawn " + health + " " + speed + " " + type);
+    private void spawn(float health, float speed, int money, int points, Sprite sprite, Minion.MinionType type, Vector2 spawn, Vector2 goal) {
+        Gdx.app.log("DEBUG", "Spawn " + health + " " + speed + " " + type + " " + spawn);
+        Entity minion = Minion.newMinion(spawn.cpy());
+        healthM.get(minion).health = health;
+        healthM.get(minion).deathTrigger = () -> {
+            deadEntities++;
+            Gdx.app.log("DEBUG", "Progress: " + progress + "/" + totalEntities + "spawned " + deadEntities + "/" + totalEntities + " dead");
+        };
+
+        minionM.get(minion).money = money;
+        minionM.get(minion).points = points;
+        minionM.get(minion).type = type;
+        minionM.get(minion).speed = speed;
+
+        if (sprite == null) {
+            //TODO DEBUG
+            Gdx.app.log("DEBUG", "No sprite?!");
+        } else {
+            spriteM.get(minion).sprite = sprite;
+        }
+        Gdx.app.log("DEBUG", "SPAWNED");
+
+        //TODO do something with the goal
+
+        //TODO find a better way of doing such hooks (guava event bus?)
+        minion.getComponent(PathComponent.class).completed = (e) -> {
+            // potential race condition here, but who cares? this is debug code
+            Gdx.app.log("DEBUG", "ONE LIVE LOST!");
+            deadEntities++;
+            Minion.ENGINE.removeEntity(e);
+            Gdx.app.log("DEBUG", "Progress: " + progress + "/" + totalEntities + "spawned " + deadEntities + "/" + totalEntities + " dead");
+        };
+
+        progress++;
+
+        Gdx.app.log("DEBUG", "Progress: " + progress + "/" + totalEntities + "spawned " + deadEntities + "/" + totalEntities + " dead");
     }
 
     enum Status {

@@ -1,6 +1,8 @@
 package me.minidigger.projecttd.wave;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Preconditions;
 import me.minidigger.projecttd.entities.Minion;
 
 /**
@@ -50,7 +52,30 @@ public class WaveGroupBuilder {
         return this;
     }
 
+    public WaveGroupBuilder spawn(Vector2 spawn) {
+        group.setSpawn(spawn);
+        return this;
+    }
+
+    public WaveGroupBuilder goal(Vector2 goal) {
+        group.setGoal(goal);
+        return this;
+    }
+
+    public WaveGroupBuilder money(int money) {
+        group.setMoney(money);
+        return this;
+    }
+
+    public WaveGroupBuilder points(int points) {
+        group.setPoints(points);
+        return this;
+    }
+
     public WaveBuilder finish() {
+        Preconditions.checkNotNull(group.getSpawn(), "Group must have a spawn");
+        Preconditions.checkNotNull(group.getGoal(), "Group must have a goal");
+
         builder.group(group);
         return builder;
     }

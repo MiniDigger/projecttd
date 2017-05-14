@@ -71,10 +71,12 @@ public class TurretSystem extends IteratingSystem {
                 healthComponent.health -= turretComponent.attackDamage;
                 // death
                 if (healthComponent.health <= 0) {
+                    healthComponent.deathTrigger.run();
                     MinionComponent minionComponent = minionM.get(turretComponent.target);
                     getEngine().removeEntity(turretComponent.target);
                     turretComponent.target = null;
                     GameScreen.INSTANCE.updateBalance(minionComponent.money);
+                    GameScreen.INSTANCE.updatePoints(minionComponent.points);
                 }
             }
         }

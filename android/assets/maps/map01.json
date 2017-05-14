@@ -10,25 +10,55 @@
           "delay": 5.0,
           "interval": 1.0,
           "health": 100.0,
-          "speed": 1.0,
+          "speed": 6.0,
           "type": "LAND",
-          "count": 10
+          "count": 10,
+          "spawn": {
+            "x": 1.5,
+            "y": 9.5
+          },
+          "goal": {
+            "x": 39.5,
+            "y": 5.5
+          },
+          "points": 0,
+          "money": 0
         },
         {
           "delay": 20.0,
           "interval": 2.0,
           "health": 300.0,
-          "speed": 0.5,
+          "speed": 4.0,
           "type": "LAND",
-          "count": 5
+          "count": 5,
+          "spawn": {
+            "x": 1.5,
+            "y": 9.5
+          },
+          "goal": {
+            "x": 39.5,
+            "y": 5.5
+          },
+          "points": 0,
+          "money": 0
         },
         {
           "delay": 30.0,
           "interval": 1.0,
           "health": 1000.0,
-          "speed": 0.3,
+          "speed": 2.0,
           "type": "LAND",
-          "count": 1
+          "count": 1,
+          "spawn": {
+            "x": 1.5,
+            "y": 9.5
+          },
+          "goal": {
+            "x": 39.5,
+            "y": 5.5
+          },
+          "points": 0,
+          "money": 0
         }
       ],
       "name": "Wave 1",
